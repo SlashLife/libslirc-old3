@@ -167,7 +167,7 @@ public:
 		try {
 			return at<Component>();
 		}
-		catch(std::out_of_range) {
+		catch(std::out_of_range&) {
 			return insert_<Component>(std::forward<Component&&>(value));
 		}
 	}
@@ -210,7 +210,7 @@ public:
 		try {
 			return at<Component>();
 		}
-		catch(std::out_of_range) {
+		catch(std::out_of_range&) {
 			return insert_<NewComponent>(std::forward<NewComponent&&>(value));
 		}
 	}

@@ -1,0 +1,546 @@
+# depslib dependency file v1.0
+1473055187 source:d:\github\libslirc\test\test.component_container.cpp
+	"testcase.hpp"
+	"../include/slirc/component_container.hpp"
+
+1473012812 d:\github\libslirc\test\testcase.hpp
+	"../3rdparty/catch/include/catch.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\catch.hpp
+	"internal/catch_suppress_warnings.h"
+	"internal/catch_notimplemented_exception.h"
+	"internal/catch_context.h"
+	"internal/catch_test_registry.hpp"
+	"internal/catch_capture.hpp"
+	"internal/catch_section.h"
+	"internal/catch_generators.hpp"
+	"internal/catch_interfaces_exception.h"
+	"internal/catch_approx.hpp"
+	"internal/catch_matchers.hpp"
+	"internal/catch_compiler_capabilities.h"
+	"internal/catch_interfaces_tag_alias_registry.h"
+	"internal/catch_test_case_info.h"
+	"internal/catch_interfaces_runner.h"
+	"internal/catch_objc.hpp"
+	"internal/catch_impl.hpp"
+	"internal/catch_default_main.hpp"
+	"internal/catch_reenable_warnings.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_suppress_warnings.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_notimplemented_exception.h
+	"catch_common.h"
+	<ostream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_common.h
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	"catch_compiler_capabilities.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_compiler_capabilities.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_context.h
+	"catch_interfaces_generators.h"
+	"catch_ptr.hpp"
+	<memory>
+	<vector>
+	<stdlib.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_generators.h
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_ptr.hpp
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_registry.hpp
+	"catch_common.h"
+	"catch_interfaces_testcase.h"
+	"catch_compiler_capabilities.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_testcase.h
+	"catch_ptr.hpp"
+	<vector>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_capture.hpp
+	"catch_result_builder.h"
+	"catch_message.h"
+	"catch_interfaces_capture.h"
+	"catch_debugger.h"
+	"catch_common.h"
+	"catch_tostring.h"
+	"catch_interfaces_runner.h"
+	"catch_compiler_capabilities.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_result_builder.h
+	"catch_result_type.h"
+	"catch_assertionresult.h"
+	"catch_common.h"
+	"catch_matchers.hpp"
+	"catch_expression_lhs.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_result_type.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_assertionresult.h
+	<string>
+	"catch_result_type.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_matchers.hpp
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_expression_lhs.hpp
+	"catch_result_builder.h"
+	"catch_evaluate.hpp"
+	"catch_tostring.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_evaluate.hpp
+	<cstddef>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_tostring.h
+	"catch_common.h"
+	<sstream>
+	<iomanip>
+	<limits>
+	<vector>
+	<cstddef>
+	"catch_objc_arc.hpp"
+	<tuple>
+	<type_traits>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_objc_arc.hpp
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_message.h
+	<string>
+	"catch_result_type.h"
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_capture.h
+	<string>
+	"catch_result_type.h"
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_debugger.h
+	"catch_platform.h"
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_platform.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_runner.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_section.h
+	"catch_section_info.h"
+	"catch_totals.hpp"
+	"catch_timer.h"
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_section_info.h
+	"catch_common.h"
+	"catch_totals.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_totals.hpp
+	<cstddef>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_timer.h
+	"catch_platform.h"
+	<stdint.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_generators.hpp
+	"catch_context.h"
+	<iterator>
+	<vector>
+	<string>
+	<stdlib.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_exception.h
+	<string>
+	<vector>
+	"catch_interfaces_registry_hub.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_registry_hub.h
+	"catch_ptr.hpp"
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_approx.hpp
+	"catch_tostring.h"
+	<cmath>
+	<limits>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_tag_alias_registry.h
+	"catch_tag_alias.h"
+	"catch_option.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_tag_alias.h
+	"catch_common.h"
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_option.hpp
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_case_info.h
+	"catch_common.h"
+	"catch_ptr.hpp"
+	<string>
+	<set>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_objc.hpp
+	"catch_objc_arc.hpp"
+	<string>
+	"catch_test_case_info.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_impl.hpp
+	"../catch_session.hpp"
+	"catch_registry_hub.hpp"
+	"catch_notimplemented_exception.hpp"
+	"catch_context_impl.hpp"
+	"catch_console_colour_impl.hpp"
+	"catch_generators_impl.hpp"
+	"catch_assertionresult.hpp"
+	"catch_test_case_info.hpp"
+	"catch_test_spec.hpp"
+	"catch_version.hpp"
+	"catch_message.hpp"
+	"catch_legacy_reporter_adapter.hpp"
+	"catch_timer.hpp"
+	"catch_common.hpp"
+	"catch_section.hpp"
+	"catch_debugger.hpp"
+	"catch_tostring.hpp"
+	"catch_result_builder.hpp"
+	"catch_tag_alias_registry.hpp"
+	"catch_test_case_tracker.hpp"
+	"../reporters/catch_reporter_multi.hpp"
+	"../reporters/catch_reporter_xml.hpp"
+	"../reporters/catch_reporter_junit.hpp"
+	"../reporters/catch_reporter_console.hpp"
+	"../reporters/catch_reporter_compact.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\catch_session.hpp
+	"internal/catch_commandline.hpp"
+	"internal/catch_list.hpp"
+	"internal/catch_run_context.hpp"
+	"internal/catch_test_spec.hpp"
+	"internal/catch_version.h"
+	"internal/catch_text.h"
+	<fstream>
+	<stdlib.h>
+	<limits>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_commandline.hpp
+	"catch_config.hpp"
+	"catch_common.h"
+	"catch_clara.h"
+	<fstream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_config.hpp
+	"catch_test_spec_parser.hpp"
+	"catch_context.h"
+	"catch_interfaces_config.h"
+	"catch_stream.h"
+	<memory>
+	<vector>
+	<string>
+	<iostream>
+	<ctime>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_spec_parser.hpp
+	"catch_test_spec.hpp"
+	"catch_interfaces_tag_alias_registry.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_spec.hpp
+	"catch_wildcard_pattern.hpp"
+	"catch_test_case_info.h"
+	<string>
+	<vector>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_wildcard_pattern.hpp
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_config.h
+	<iostream>
+	<string>
+	<vector>
+	"catch_ptr.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_stream.h
+	"catch_compiler_capabilities.h"
+	"catch_streambuf.h"
+	<streambuf>
+	<ostream>
+	<fstream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_streambuf.h
+	"catch_compiler_capabilities.h"
+	<streambuf>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_clara.h
+	"../external/clara.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\external\clara.h
+	<string>
+	<vector>
+	<sstream>
+	<algorithm>
+	<map>
+	<stdexcept>
+	<memory>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_list.hpp
+	"catch_commandline.hpp"
+	"catch_text.h"
+	"catch_console_colour.hpp"
+	"catch_interfaces_reporter.h"
+	"catch_test_spec_parser.hpp"
+	<limits>
+	<algorithm>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_text.h
+	"catch_config.hpp"
+	"../external/tbc_text_format.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\external\tbc_text_format.h
+	<string>
+	<vector>
+	<sstream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_console_colour.hpp
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_interfaces_reporter.h
+	"catch_section_info.h"
+	"catch_common.h"
+	"catch_totals.hpp"
+	"catch_ptr.hpp"
+	"catch_config.hpp"
+	"catch_test_case_info.h"
+	"catch_assertionresult.h"
+	"catch_message.h"
+	"catch_option.hpp"
+	<string>
+	<ostream>
+	<map>
+	<assert.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_run_context.hpp
+	"catch_interfaces_runner.h"
+	"catch_interfaces_reporter.h"
+	"catch_interfaces_exception.h"
+	"catch_config.hpp"
+	"catch_test_registry.hpp"
+	"catch_test_case_info.h"
+	"catch_capture.hpp"
+	"catch_totals.hpp"
+	"catch_test_spec.hpp"
+	"catch_test_case_tracker.hpp"
+	"catch_timer.h"
+	"catch_result_builder.h"
+	"catch_fatal_condition.hpp"
+	<set>
+	<string>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_case_tracker.hpp
+	"catch_compiler_capabilities.h"
+	"catch_ptr.hpp"
+	<map>
+	<string>
+	<assert.h>
+	<vector>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_fatal_condition.hpp
+	<signal.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_version.h
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_registry_hub.hpp
+	"catch_interfaces_registry_hub.h"
+	"catch_test_case_registry_impl.hpp"
+	"catch_reporter_registry.hpp"
+	"catch_exception_translator_registry.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_case_registry_impl.hpp
+	"catch_test_registry.hpp"
+	"catch_test_case_info.h"
+	"catch_test_spec.hpp"
+	"catch_context.h"
+	<vector>
+	<set>
+	<sstream>
+	<iostream>
+	<algorithm>
+	<random>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_reporter_registry.hpp
+	"catch_interfaces_reporter.h"
+	<map>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_exception_translator_registry.hpp
+	"catch_interfaces_exception.h"
+	"catch_tostring.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_notimplemented_exception.hpp
+	"catch_notimplemented_exception.h"
+	<ostream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_context_impl.hpp
+	"catch_run_context.hpp"
+	"catch_context.h"
+	"catch_stream.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_stream.hpp
+	"catch_stream.h"
+	"catch_debugger.h"
+	<stdexcept>
+	<cstdio>
+	<iostream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_console_colour_impl.hpp
+	"catch_console_colour.hpp"
+	<AfxWin.h>
+	<windows.h>
+	<unistd.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_generators_impl.hpp
+	"catch_interfaces_generators.h"
+	"catch_common.h"
+	<vector>
+	<string>
+	<map>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_assertionresult.hpp
+	"catch_assertionresult.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_test_case_info.hpp
+	"catch_test_spec.hpp"
+	"catch_test_case_info.h"
+	"catch_interfaces_testcase.h"
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_version.hpp
+	"catch_version.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_message.hpp
+	"catch_message.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_legacy_reporter_adapter.hpp
+	"catch_legacy_reporter_adapter.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_legacy_reporter_adapter.h
+	"catch_interfaces_reporter.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_timer.hpp
+	"catch_timer.h"
+	"catch_platform.h"
+	<windows.h>
+	<sys/time.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_common.hpp
+	"catch_common.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_section.hpp
+	"catch_section.h"
+	"catch_capture.hpp"
+	"catch_compiler_capabilities.h"
+	"catch_timer.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_debugger.hpp
+	"catch_debugger.h"
+	<iostream>
+	<assert.h>
+	<stdbool.h>
+	<sys/types.h>
+	<unistd.h>
+	<sys/sysctl.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_tostring.hpp
+	"catch_tostring.h"
+	"catch_interfaces_config.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_result_builder.hpp
+	"catch_result_builder.h"
+	"catch_context.h"
+	"catch_interfaces_config.h"
+	"catch_interfaces_runner.h"
+	"catch_interfaces_capture.h"
+	"catch_interfaces_registry_hub.h"
+	"catch_wildcard_pattern.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_tag_alias_registry.hpp
+	"catch_tag_alias_registry.h"
+	"catch_console_colour.hpp"
+	<map>
+	<iostream>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_tag_alias_registry.h
+	"catch_interfaces_tag_alias_registry.h"
+	<map>
+
+1473012734 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_multi.hpp
+	"../internal/catch_interfaces_reporter.h"
+
+1473012734 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_xml.hpp
+	"catch_reporter_bases.hpp"
+	"../internal/catch_capture.hpp"
+	"../internal/catch_reporter_registrars.hpp"
+	"../internal/catch_xmlwriter.hpp"
+	"../internal/catch_timer.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_bases.hpp
+	"../internal/catch_interfaces_reporter.h"
+	<cstring>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_reporter_registrars.hpp
+	"catch_interfaces_registry_hub.h"
+	"catch_legacy_reporter_adapter.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_xmlwriter.hpp
+	"catch_stream.h"
+	"catch_compiler_capabilities.h"
+	"catch_suppress_warnings.h"
+	<sstream>
+	<string>
+	<vector>
+	<iomanip>
+	"catch_reenable_warnings.h"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_reenable_warnings.h
+
+1473012734 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_junit.hpp
+	"catch_reporter_bases.hpp"
+	"../internal/catch_tostring.h"
+	"../internal/catch_reporter_registrars.hpp"
+	"../internal/catch_xmlwriter.hpp"
+	<assert.h>
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_console.hpp
+	"catch_reporter_bases.hpp"
+	"../internal/catch_reporter_registrars.hpp"
+	"../internal/catch_console_colour.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\reporters\catch_reporter_compact.hpp
+	"catch_reporter_bases.hpp"
+	"../internal/catch_reporter_registrars.hpp"
+	"../internal/catch_console_colour.hpp"
+
+1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_default_main.hpp
+
+1473115600 d:\github\libslirc\include\slirc\component_container.hpp
+	"detail/system.hpp"
+	<cassert>
+	<iostream>
+	<memory>
+	<typeinfo>
+	<typeindex>
+	<type_traits>
+	<unordered_map>
+	<utility>
+	<boost/utility.hpp>
+	"component.hpp"
+	"exceptions.hpp"
+
+1473036191 d:\github\libslirc\include\slirc\detail\system.hpp
+
+1473115234 d:\github\libslirc\include\slirc\component.hpp
+	"detail/system.hpp"
+
+1473116610 d:\github\libslirc\include\slirc\exceptions.hpp
+	"detail/system.hpp"
+	<stdexcept>
+

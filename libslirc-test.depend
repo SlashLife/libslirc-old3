@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1473055187 source:d:\github\libslirc\test\test.component_container.cpp
+1473189533 source:d:\github\libslirc\test\test.component_container.cpp
 	"testcase.hpp"
 	"../include/slirc/component_container.hpp"
 
-1473012812 d:\github\libslirc\test\testcase.hpp
+1474621001 d:\github\libslirc\test\testcase.hpp
 	"../3rdparty/catch/include/catch.hpp"
 
 1473012733 d:\github\libslirc\3rdparty\catch\include\catch.hpp
@@ -521,10 +521,9 @@
 
 1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_default_main.hpp
 
-1473115600 d:\github\libslirc\include\slirc\component_container.hpp
+1473376774 d:\github\libslirc\include\slirc\component_container.hpp
 	"detail/system.hpp"
 	<cassert>
-	<iostream>
 	<memory>
 	<typeinfo>
 	<typeindex>
@@ -535,12 +534,23 @@
 	"component.hpp"
 	"exceptions.hpp"
 
-1473036191 d:\github\libslirc\include\slirc\detail\system.hpp
+1474620380 d:\github\libslirc\include\slirc\detail\system.hpp
+	<cassert>
 
-1473115234 d:\github\libslirc\include\slirc\component.hpp
+1473189170 d:\github\libslirc\include\slirc\component.hpp
 	"detail/system.hpp"
 
-1473116610 d:\github\libslirc\include\slirc\exceptions.hpp
+1473189486 d:\github\libslirc\include\slirc\exceptions.hpp
 	"detail/system.hpp"
 	<stdexcept>
+
+1474620577 source:d:\github\libslirc\test\test.module.cpp
+	"testcase.hpp"
+	"../include/slirc/module.hpp"
+
+1474618463 d:\github\libslirc\include\slirc\module.hpp
+	<cassert>
+
+1474620953 source:d:\github\libslirc\test\test.testcase.cpp
+	"testcase.hpp"
 

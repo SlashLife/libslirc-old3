@@ -15,8 +15,9 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-DBUILD_DLL" />
 					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-DSLIRC_DEBUG" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
@@ -30,9 +31,10 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-DBUILD_DLL" />
-					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -40,6 +42,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-DSLIRC_EXPORTS" />
+		</Compiler>
 		<Unit filename="include/slirc/component.hpp" />
 		<Unit filename="include/slirc/component_container.hpp" />
 		<Unit filename="include/slirc/detail/system.hpp" />

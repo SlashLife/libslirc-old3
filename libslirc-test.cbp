@@ -37,6 +37,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DSLIRC_DEBUG" />
 		</Compiler>
 		<Unit filename="test/test.component_container.cpp">
 			<Option target="component_container" />

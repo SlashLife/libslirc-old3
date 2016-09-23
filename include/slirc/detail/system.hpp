@@ -23,13 +23,12 @@
 #ifndef SLIRC_DETAIL_SYSTEM_HPP_INCLUDED
 #define SLIRC_DETAIL_SYSTEM_HPP_INCLUDED
 
+#include <cassert>
+
 // declare globally used friend for deep introspection tests
 namespace slirc { namespace test { class test_overrides; }}
 
-#ifdef SLIRCAPI
 #undef SLIRCAPI
-#endif
-
 #define SLIRCAPI // TODO: Definieren
 
 #define SLIRC_COMMA ,
@@ -38,6 +37,15 @@ namespace slirc { namespace test { class test_overrides; }}
 // Instead the conditions on which functions are enabled should be documented in
 // a Doxygen \note. This macro is overridden by the Doxygen configuration.
 #define SLIRC_ENABLE_IF(condition, return_type) std::enable_if_t<condition, return_type>
+
+#ifndef SLIRC_ASSERT
+// use own version to allow test cases to check whether assertions are hit
+#	ifndef SLIRC_DEBUG
+#		define SLIRC_ASSERT(cond) (void(0))
+#	else
+#		define SLIRC_ASSERT(cond) assert(cond)
+#	endif
+#endif // SLIRC_ASSERT
 
 #endif // SLIRC_DETAIL_SYSTEM_HPP_INCLUDED
 

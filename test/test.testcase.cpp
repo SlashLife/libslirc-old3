@@ -20,34 +20,10 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#include "testcase.hpp"
 
-#ifndef SLIRC_TEST_TESTCASE_HPP_INCLUDED
-#define SLIRC_TEST_TESTCASE_HPP_INCLUDED
+#define SLIRC_IRC_HPP_INCLUDED
 
-#define SLIRC_TESTCASE
-#define SLIRC_EXPORTS
-
-namespace slirc { namespace test {
-	// deliberately not derived from std::exception:
-	//   we don't want this to be accidentally caught by tested code
-	//   (disregarding catch(...) blocks that do not rethrow as being dumb anyway)
-	struct assertion_failed_exception {};
-	inline void assert_(bool cond) {
-		if (!(cond))
-			throw ::slirc::test::assertion_failed_exception();
-	}
-}}
-
-// override internal assert to make them testable -
-// test code should not invoke assertions unintentionally anyway.
-#undef SLIRC_ASSERT
-#define SLIRC_ASSERT(cond) ::slirc::test::assert_(cond)
-
-#define CATCH_CONFIG_MAIN
-#include "../3rdparty/catch/include/catch.hpp"
-
-#define REQUIRE_ASSERTION_FAILURE(cond) \
-	REQUIRE_THROWS_AS(cond, ::slirc::test::assertion_failed_exception)
-
-#endif // SLIRC_TEST_TESTCASE_HPP_INCLUDED
+TEST_CASE("testcase - REQUIRE_ASSERTION_FAILURE", "") {
+	REQUIRE_ASSERTION_FAILURE( SLIRC_ASSERT( false && "should fail" ) );
+}

@@ -351,12 +351,11 @@ public:
 	friend class ::slirc::test::test_overrides;
 
 	::slirc::irc &irc; ///< The IRC context this event is associated with.
+
+	component_container components; ///< Storage for components related to this event.
+
 	const id_type original_id; ///< The original event id this event was created as.
 	const id_type &current_id; ///< The event id this event is currently being handled as.
-
-	/** \brief Storage for components related to this event.
-	 */
-	component_container components;
 
 private:
 	event()=delete;
@@ -518,117 +517,12 @@ public:
 
 		id_queue_type add_ids;
 		while(begin != end) {
-			if (!*begin) {
-				result_callback(begin, invalid);
-				++begin;
-				continue;
-			}
-
-			switch(strategy) {
-			case discard:
-				if (
-					queued_ids.end() != std::find(
-						queued_ids.begin() + next_id_index,
-						queued_ids.end(),
-						*begin
-					)
-				) {
-					result_callback(begin, discarded);
-				}
-				else {
-					add_ids.push_back(*begin);
-					result_callback(begin, queued);
-				}
-				break;
-
-			case duplicate:
-			case replace:
-				id_queue_type::iterator new_end = (strategy == replace)
-					// remove existing duplicates when replacing ...
-					? std::remove_if(queued_ids.begin() + next_id_index, queued_ids.end(), *begin )
-					// ... otherwise just skip the upcoming check for erasing from the queue
-					: queued_ids.end();
-				if (new_end != queued_ids.end()) {
-					SLIRC_ASSERT( strategy == replace &&
-						"Must not erase elements from existing queue for any other strategy" );
-					queued_ids.erase(new_end, queued_ids.end());
-					result_callback(begin, replaced);
-				}
-				else {
-					result_callback(begin, queued);
-				}
-				add_ids.push_back(*begin);
-				break;
-
-			default:
-				SLIRC_ASSERT( false && "Invalid strategy!" );
-				std::terminate();
-			}
+			auto result = prepare_append_queue(add_ids, *begin, strategy);
+			result_callback(begin, result);
 			++begin;
 		}
 
-		if (!add_ids.empty()) {
-			if (position == at_front) {
-				if (add_ids.size() <= next_id_index) {
-					// enough space in front of existing queue
-					auto end_of_insert = std::copy(
-						add_ids.begin(), add_ids.end(),
-						queued_ids.begin() + next_id_index - add_ids.size()
-					);
-					SLIRC_ASSERT( end_of_insert == queued_ids.begin()+next_id_index
-						&& "Inserted ID range does not line up with previous ids." );
-
-					next_id_index -= add_ids.size();
-				}
-				else {
-					// not enough space in existing queue;
-					// append current queue to new queue and swap
-					add_ids.resize( add_ids.size() + queued_ids.size() - next_id_index );
-
-					auto end_of_insert = std::copy(
-						queued_ids.begin() + next_id_index - add_ids.size(), queued_ids.end(),
-						add_ids.begin()
-					);
-					SLIRC_ASSERT( end_of_insert == add_ids.end()
-						&& "Inserted ID range does not line up with previous ids." );
-
-					std::swap(add_ids, queued_ids);
-					next_id_index = 0;
-				}
-			}
-			else {
-				SLIRC_ASSERT( position == at_back && "Invalid queue insertion position." );
-
-				if (
-					// There is space in front of the queue, ...
-					0 < next_id_index &&
-					// ... but not enough space in the back to accomodate all
-					// elements that are about to be inserted ...
-					queued_ids.capacity() - queued_ids.size() < add_ids.size()
-				) {
-					// ... maybe after reorganizing the original elements to the
-					// beginning the space will suffice - if not then at least
-					// we reallocate with as few elements to be copied as
-					// possible.
-					auto prev_length = queued_ids.size() - next_id_index;
-
-					auto new_end = std::copy(
-						queued_ids.begin() + next_id_index, queued_ids.end(),
-						queued_ids.begin()
-					);
-					next_id_index = 0;
-
-					SLIRC_ASSERT( queued_ids.size() == prev_length
-						&& "Reorganizing the queue wrongfully lost or created elements." );
-				}
-
-				// now, with or without reorganizing, append new elements to end
-				auto prev_size = queued_ids.size();
-				queued_ids.insert(queued_ids.end(), add_ids.begin(), add_ids.end());
-				SLIRC_ASSERT( queued_ids.size() == prev_size
-					&& "Appending to the queue wrongfully lost or created elements." );
-			}
-		}
+		append_to_queue_unchecked(add_ids, position);
 	}
 
 	/** \brief Removes event ids from the queue.
@@ -685,6 +579,10 @@ public:
 	 *         if the queue is empty.
 	 */
 	SLIRCAPI id_type pop_next_queued_id();
+
+private:
+	SLIRCAPI queuing_result prepare_append_queue(id_queue_type&, id_type, queuing_strategy);
+	SLIRCAPI void append_to_queue_unchecked(id_queue_type&, queuing_position);
 };
 
 }

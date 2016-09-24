@@ -554,3 +554,18 @@
 1474620953 source:d:\github\libslirc\test\test.testcase.cpp
 	"testcase.hpp"
 
+1474639576 source:d:\github\libslirc\test\test.event.cpp
+	"testcase.hpp"
+	<iomanip>
+	<iostream>
+	<type_traits>
+	"../include/slirc/event.hpp"
+
+1474639701 d:\github\libslirc\include\slirc\event.hpp
+	"detail/system.hpp"
+	<typeindex>
+	<typeinfo>
+	<type_traits>
+	<optional>
+	<experimental/optional>
+

@@ -20,48 +20,33 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#include "../include/slirc/event.hpp"
 
-#ifndef SLIRC_EXCEPTIONS_HPP_INCLUDED
-#define SLIRC_EXCEPTIONS_HPP_INCLUDED
+#include "../include/slirc/irc.hpp"
 
-#include "detail/system.hpp"
-
-#include <stdexcept>
-
-namespace slirc {
-namespace exceptions {
-
-/** \brief Signals the presence of a conflicting component on an operation on
- *    slirc::component_container.
- *
- * Thrown by slirc::component_container when the requested operation could not
- * be completed due to the presence of a conflicting component in the container.
- *
- * On insertion, a conflicting component is any component derived from the same
- * specialization of slirc::component.
- *
- * On retrieval (\c at, \c at_or_insert) or removal (\c remove) operations, a
- * conflicting component is one that is not identical to or derived from the
- * requested component type.
- *
- * To bypass failure by conflicts on retrieval or removal operations, you can
- * run the operation on the components base type instead.
- *
- * \see slirc::component::component_base_type
- */
-struct component_conflict: std::logic_error {
-	component_conflict(): std::logic_error("The component_container contains a conflicting component.") {}
-};
-
-/** \brief Is thrown if an invalid type id is used where a valid type id is required.
- */
-struct invalid_event_id: std::logic_error {
-	invalid_event_id(): std::logic_error("An invalid type id was used where a valid type id is required.") {}
-};
-
-}
+SLIRCAPI slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original_id_)
+: irc(irc_)
+, original_id(original_id_)
+, current_id(current_id_mutable)
+, current_id_mutable(original_id_)
+, next_id_index(0) {
+	if (!original_id_) {
+		throw exceptions::invalid_event_id();
+	}
+	queued_ids.push_back(original_id_);
 }
 
-#endif // SLIRC_EXCEPTIONS_HPP_INCLUDED
+SLIRCAPI void slirc::event::handle();
+SLIRCAPI void slirc::event::handle_as(id_type id);
 
+SLIRCAPI slirc::event::queuing_result slirc::event::queue_as(
+	id_type id, queuing_strategy strategy, queuing_position position
+);
+
+SLIRCAPI bool slirc::event::unqueue(id_type id);
+SLIRCAPI bool slirc::event::unqueue(id_type::matcher matcher);
+
+SLIRCAPI bool slirc::event::is_queued_as(id_type id);
+SLIRCAPI bool slirc::event::is_queued_as(id_type::matcher matcher);
+
+SLIRCAPI slirc::event::id_type slirc::event::pop_next_queued_id();

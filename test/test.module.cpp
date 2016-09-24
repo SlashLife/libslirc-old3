@@ -45,6 +45,5 @@ TEST_CASE("module - irc member gets set correctly", "") {
 	slirc::irc irc;
 	slirc::irc *pirc = nullptr;
 
-	REQUIRE_ASSERTION_FAILURE( some_module m(irc, pirc) );
 	REQUIRE(pirc == &irc);
 }

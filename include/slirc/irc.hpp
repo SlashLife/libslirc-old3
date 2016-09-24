@@ -22,46 +22,23 @@
 
 #pragma once
 
-#ifndef SLIRC_EXCEPTIONS_HPP_INCLUDED
-#define SLIRC_EXCEPTIONS_HPP_INCLUDED
+#ifndef SLIRC_IRC_HPP_INCLUDED
+#define SLIRC_IRC_HPP_INCLUDED
 
 #include "detail/system.hpp"
 
-#include <stdexcept>
+#include "event.hpp"
 
 namespace slirc {
-namespace exceptions {
 
-/** \brief Signals the presence of a conflicting component on an operation on
- *    slirc::component_container.
- *
- * Thrown by slirc::component_container when the requested operation could not
- * be completed due to the presence of a conflicting component in the container.
- *
- * On insertion, a conflicting component is any component derived from the same
- * specialization of slirc::component.
- *
- * On retrieval (\c at, \c at_or_insert) or removal (\c remove) operations, a
- * conflicting component is one that is not identical to or derived from the
- * requested component type.
- *
- * To bypass failure by conflicts on retrieval or removal operations, you can
- * run the operation on the components base type instead.
- *
- * \see slirc::component::component_base_type
+/**
  */
-struct component_conflict: std::logic_error {
-	component_conflict(): std::logic_error("The component_container contains a conflicting component.") {}
-};
-
-/** \brief Is thrown if an invalid type id is used where a valid type id is required.
- */
-struct invalid_event_id: std::logic_error {
-	invalid_event_id(): std::logic_error("An invalid type id was used where a valid type id is required.") {}
+class irc {
+	inline event::pointer make_event(event::id_type id) {
+		return event::make_event(*this, id);
+	}
 };
 
 }
-}
 
-#endif // SLIRC_EXCEPTIONS_HPP_INCLUDED
-
+#endif // SLIRC_IRC_HPP_INCLUDED

@@ -48,8 +48,10 @@
 		<Unit filename="include/slirc/component.hpp" />
 		<Unit filename="include/slirc/component_container.hpp" />
 		<Unit filename="include/slirc/detail/system.hpp" />
+		<Unit filename="include/slirc/event.hpp" />
 		<Unit filename="include/slirc/exceptions.hpp" />
 		<Unit filename="include/slirc/module.hpp" />
+		<Unit filename="src/event.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

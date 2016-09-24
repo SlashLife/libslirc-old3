@@ -29,7 +29,11 @@
 namespace slirc { namespace test { class test_overrides; }}
 
 #undef SLIRCAPI
-#define SLIRCAPI // TODO: Definieren
+#ifdef SLIRC_EXPORTS
+#	define SLIRCAPI __declspec(dllexport)
+#else
+#	define SLIRCAPI __declspec(dllimport)
+#endif
 
 #define SLIRC_COMMA ,
 

@@ -20,34 +20,9 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#include "testcase.hpp"
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
+#include "../include/slirc/irc.hpp"
 
-#include <cassert>
-
-namespace slirc {
-namespace detail {
-	struct SLIRCAPI module_base {
-		module_base(::slirc::irc &irc_)
-		: irc(irc_) {}
-		virtual ~module_base()=default;
-
-		::slirc::irc &irc;
-	};
+SCENARIO("irc", "") {
 }
-
-template<typename ModuleApi>
-struct module: protected detail::module_base {
-	friend struct ::slirc::irc;
-	typedef ModuleApi module_api_type;
-
-protected:
-	module(::slirc::irc &irc_)
-	: module_base(irc_) {}
-};
-
-}
-
-#endif // SLIRC_MODULE_HPP_INCLUDED

@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1474709694 source:d:\github\libslirc\src\event.cpp
+	"../include/slirc/event.hpp"
+	"../include/slirc/irc.hpp"
+
+1474709365 d:\github\libslirc\include\slirc\event.hpp
+	"detail/system.hpp"
+	<algorithm>
+	<functional>
+	<iterator>
+	<memory>
+	<typeindex>
+	<typeinfo>
+	<type_traits>
+	<vector>
+	<optional>
+	<experimental/optional>
+	<boost/utility.hpp>
+	"component_container.hpp"
+	"exceptions.hpp"
+
+1474644897 d:\github\libslirc\include\slirc\detail\system.hpp
+	<cassert>
+
+1473376774 d:\github\libslirc\include\slirc\component_container.hpp
+	"detail/system.hpp"
+	<cassert>
+	<memory>
+	<typeinfo>
+	<typeindex>
+	<type_traits>
+	<unordered_map>
+	<utility>
+	<boost/utility.hpp>
+	"component.hpp"
+	"exceptions.hpp"
+
+1473189170 d:\github\libslirc\include\slirc\component.hpp
+	"detail/system.hpp"
+
+1474643686 d:\github\libslirc\include\slirc\exceptions.hpp
+	"detail/system.hpp"
+	<stdexcept>
+
+1474706558 d:\github\libslirc\include\slirc\irc.hpp
+	"detail/system.hpp"
+	"event.hpp"
+

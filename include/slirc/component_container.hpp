@@ -362,6 +362,18 @@ public:
 	}
 };
 
+/** \brief Enables derived classes to hold components.
+ */
+struct takes_components {
+	component_container components;
+
+protected:
+	/// \brief Constructs the component holder.
+	takes_components() = default;
+	/// \brief Destructs the component holder.
+	~takes_components() = default;
+};
+
 }
 
 #endif // SLIRC_COMPONENT_CONTAINER_HPP_INCLUDED

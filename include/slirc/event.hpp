@@ -98,7 +98,7 @@ constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId)
  *   slirc::event::pointer e = irc.make_event(my_event_id);
  * \endcode
  */
-class event: public std::enable_shared_from_this<event>, private boost::noncopyable {
+class event: public takes_components, public std::enable_shared_from_this<event>, private boost::noncopyable {
 public:
 	typedef std::shared_ptr<event> pointer; ///< A smart pointer to an event.
 	typedef std::weak_ptr<event> weak_pointer; ///< A weak pointer to an event.
@@ -352,8 +352,6 @@ public:
 
 	::slirc::irc &irc; ///< The IRC context this event is associated with.
 
-	component_container components; ///< Storage for components related to this event.
-
 	const id_type original_id; ///< The original event id this event was created as.
 	const id_type &current_id; ///< The event id this event is currently being handled as.
 
@@ -375,7 +373,7 @@ private:
 public:
 #ifndef SLIRC_DOXYGEN
 	/// Not documented. Internal use only.
-	SLIRCAPI event(constructor_tag, slirc::irc &irc_, id_type original_id_);
+	event(constructor_tag, slirc::irc &irc_, id_type original_id_);
 #endif // SLIRC_DOXYGEN
 
 	/** \brief Kicks off handling of the event.
@@ -386,7 +384,7 @@ public:
 	 *
 	 * When this function returns, the event id queue will be empty.
 	 */
-	SLIRCAPI void handle();
+	void handle();
 
 	/** \brief Handles event as specific type id.
 	 *
@@ -401,7 +399,7 @@ public:
 	 *
 	 * \throw exceptions::invalid_event_id if the event id was invalid
 	 */
-	SLIRCAPI void handle_as(id_type id);
+	void handle_as(id_type id);
 
 	/** \brief Queues event as a different id.
 	 *
@@ -432,7 +430,7 @@ public:
 	 *
 	 * \throw exceptions::invalid_event_id if the event id was invalid
 	 */
-	SLIRCAPI queuing_result queue_as(id_type id, queuing_strategy strategy=discard, queuing_position position=at_back);
+	queuing_result queue_as(id_type id, queuing_strategy strategy=discard, queuing_position position=at_back);
 
 	/** \brief Queues event as a different id.
 	 *
@@ -534,7 +532,7 @@ public:
 	 * \return <tt>true</tt> if any ids have been removed from the queue,
 	 *         <tt>false</tt> otherwise
 	 */
-	SLIRCAPI bool unqueue(id_type id);
+	bool unqueue(id_type id);
 
 	/** \brief Removes event ids from the queue.
 	 *
@@ -545,7 +543,7 @@ public:
 	 * \return <tt>true</tt> if any ids have been removed from the queue,
 	 *         <tt>false</tt> otherwise
 	 */
-	SLIRCAPI bool unqueue(id_type::matcher matcher);
+	bool unqueue(id_type::matcher matcher);
 
 	/** \brief Checks whether this event is queued as a specific event id.
 	 *
@@ -554,7 +552,7 @@ public:
 	 * \return <tt>true</tt> if the event is queued as the given event id,
 	 *         <tt>false</tt> otherwise
 	 */
-	SLIRCAPI bool is_queued_as(id_type id) const;
+	bool is_queued_as(id_type id) const;
 
 	/** \brief Checks whether this event is queued as an id meeting certain criteria.
 	 *
@@ -571,18 +569,18 @@ public:
 	 *       value of this function) to make more detailed inquiries about the
 	 *       currently queued event ids.
 	 */
-	SLIRCAPI bool is_queued_as(id_type::matcher matcher) const;
+	bool is_queued_as(id_type::matcher matcher) const;
 
 	/** \brief Pops the next event id from the queue.
 	 *
 	 * \return The next event id this event is queued as or an invalid event id
 	 *         if the queue is empty.
 	 */
-	SLIRCAPI id_type pop_next_queued_id();
+	id_type pop_next_queued_id();
 
 private:
-	SLIRCAPI queuing_result prepare_append_queue(id_queue_type&, id_type, queuing_strategy);
-	SLIRCAPI void append_to_queue_unchecked(id_queue_type&, queuing_position);
+	queuing_result prepare_append_queue(id_queue_type&, id_type, queuing_strategy);
+	void append_to_queue_unchecked(id_queue_type&, queuing_position);
 };
 
 }

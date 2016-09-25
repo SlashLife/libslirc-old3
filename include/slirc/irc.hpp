@@ -27,16 +27,57 @@
 
 #include "detail/system.hpp"
 
+#include <map>
+#include <memory>
+#include <type_traits>
+
+#include <boost/utility.hpp>
+
+#include "component_container.hpp"
 #include "event.hpp"
 
 namespace slirc {
 
+namespace apis {
+	struct event_queue;
+}
+
 /**
  */
-class irc {
+class SLIRCAPI irc: public takes_components, private boost::noncopyable {
+	typedef std::map<std::type_index, >
+public:
+	irc();
+
+
+
+	// Module API
+
+	template<typename Module, typename... Args>
+	Module &load(Args... && args); // TODO: impl
+
+	template<typename Module>
+	Module &unload(); // TODO: impl
+
+	template<typename Module>
+	Module &get(); // TODO: impl
+
+
+
+	// event api
+
+	inline apis::event_queue &event_queue() const {
+		SLIRC_ASSERT( event_queue_ &&
+			"IRC context should never be without a loaded event queue module!" );
+		return *event_queue_;
+	}
+
 	inline event::pointer make_event(event::id_type id) {
 		return event::make_event(*this, id);
 	}
+
+private:
+	apis::event_queue *event_queue_;
 };
 
 }

@@ -20,34 +20,23 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#include "testcase.hpp"
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
+#include "../include/slirc/event.hpp"
+#include "../include/slirc/irc.hpp"
+#include "../include/slirc/apis/event_queue.hpp"
 
-#include <cassert>
+enum class test_events: slirc::event::underlying_id_type {
 
-namespace slirc {
-namespace detail {
-	struct SLIRCAPI module_base {
-		module_base(::slirc::irc &irc_)
-		: irc(irc_) {}
-		virtual ~module_base()=default;
-
-		::slirc::irc &irc;
-	};
-}
-
-template<typename ModuleApi>
-struct module: protected detail::module_base {
-	friend struct ::slirc::irc;
-	typedef ModuleApi module_api_type;
-
-protected:
-	module(::slirc::irc &irc_)
-	: module_base(irc_) {}
 };
+SLIRC_REGISTER_EVENT_ID_ENUM(class test_events);
 
+TEST_CASE("apis/event_queue - connections") {
+	GIVEN("an IRC context with an event queue loaded") {
+		slirc::irc irc;
+		irc.unload<slirc::apis::event_queue>();
+		irc.load<test_event_queue>();
+
+
+	}
 }
-
-#endif // SLIRC_MODULE_HPP_INCLUDED

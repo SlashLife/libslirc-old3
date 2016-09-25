@@ -27,6 +27,24 @@
 #include <iostream>
 #include <type_traits>
 
+#define SLIRC_IRC_HPP_INCLUDED
+namespace slirc {
+struct irc;
+}
+
+#include "../include/slirc/module.hpp"
+
+namespace slirc {
+
+struct irc {
+	inline event::pointer make_event(event::id_type id) {
+		return event::make_event(*this, id);
+	}
+
+
+};
+}
+
 #include "../include/slirc/event.hpp"
 #include "../src/event.cpp"
 
@@ -381,7 +399,7 @@ SCENARIO("event - event::handle(), event::handle_as()", "") {
 
 		WHEN("checking the original event id") {
 			THEN("it will be the same as the one it was initialized as.") {
-				REQUIRE( e->original_id = valid_id_1a );
+				REQUIRE( e->original_id == valid_id_1a );
 			}
 		}
 	}

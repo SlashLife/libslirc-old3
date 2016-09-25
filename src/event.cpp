@@ -24,7 +24,7 @@
 
 #include "../include/slirc/irc.hpp"
 
-SLIRCAPI slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original_id_)
+slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original_id_)
 : irc(irc_)
 , components()
 , original_id(original_id_)
@@ -39,23 +39,23 @@ SLIRCAPI slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original
 }
 
 /*
-SLIRCAPI void slirc::event::handle();
-SLIRCAPI void slirc::event::handle_as(id_type id);
+void slirc::event::handle();
+void slirc::event::handle_as(id_type id);
 
-SLIRCAPI slirc::event::queuing_result slirc::event::queue_as(
+slirc::event::queuing_result slirc::event::queue_as(
 	id_type id, queuing_strategy strategy, queuing_position position
 );
 
-SLIRCAPI bool slirc::event::unqueue(id_type id);
-SLIRCAPI bool slirc::event::unqueue(id_type::matcher matcher);
+bool slirc::event::unqueue(id_type id);
+bool slirc::event::unqueue(id_type::matcher matcher);
 
-SLIRCAPI bool slirc::event::is_queued_as(id_type id);
-SLIRCAPI bool slirc::event::is_queued_as(id_type::matcher matcher);
+bool slirc::event::is_queued_as(id_type id);
+bool slirc::event::is_queued_as(id_type::matcher matcher);
 
-SLIRCAPI slirc::event::id_type slirc::event::pop_next_queued_id();
+slirc::event::id_type slirc::event::pop_next_queued_id();
 */
 
-SLIRCAPI slirc::event::queuing_result slirc::event::prepare_append_queue(
+slirc::event::queuing_result slirc::event::prepare_append_queue(
 	id_queue_type &add_ids, id_type newid, queuing_strategy strategy
 ) {
 	if (!newid) {
@@ -108,7 +108,7 @@ SLIRCAPI slirc::event::queuing_result slirc::event::prepare_append_queue(
 	}
 }
 
-SLIRCAPI void slirc::event::append_to_queue_unchecked(
+void slirc::event::append_to_queue_unchecked(
 	id_queue_type &add_ids, queuing_position position
 ) {
 	// we assume all checks have been done beforehand

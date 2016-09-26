@@ -51,5 +51,11 @@ namespace slirc { namespace test { class test_overrides; }}
 #	endif
 #endif // SLIRC_ASSERT
 
-#endif // SLIRC_DETAIL_SYSTEM_HPP_INCLUDED
+#undef SLIRC_DOXYGEN_IGNORE
+#ifndef SLIRC_DOXYGEN
+#	define SLIRC_DOXYGEN_IGNORE(...) ...
+#else
+#	define SLIRC_DOXYGEN_IGNORE(...)
+#endif
 
+#endif // SLIRC_DETAIL_SYSTEM_HPP_INCLUDED

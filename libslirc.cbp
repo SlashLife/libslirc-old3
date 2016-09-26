@@ -43,15 +43,23 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++1z" />
+			<Add option="-pthread" />
 			<Add option="-DSLIRC_EXPORTS" />
 		</Compiler>
+		<Unit filename="include/slirc/apis/event_manager.hpp" />
 		<Unit filename="include/slirc/component.hpp" />
 		<Unit filename="include/slirc/component_container.hpp" />
+		<Unit filename="include/slirc/detail/doxygen-global-defines.hpp" />
 		<Unit filename="include/slirc/detail/system.hpp" />
 		<Unit filename="include/slirc/event.hpp" />
 		<Unit filename="include/slirc/exceptions.hpp" />
+		<Unit filename="include/slirc/irc.hpp" />
 		<Unit filename="include/slirc/module.hpp" />
+		<Unit filename="include/slirc/modules/event_manager.hpp" />
 		<Unit filename="src/event.cpp" />
+		<Unit filename="src/irc.cpp" />
+		<Unit filename="src/modules/event_manager.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -278,7 +278,7 @@ public:
 		return const_cast<component_container&>(*this).at<Component>();
 	}
 
-	/** \brief Fetches a component.
+	/** \brief Finds a component.
 	 *
 	 * \tparam Component
 	 *     The type of the component to be fetched.
@@ -288,7 +288,7 @@ public:
 	 *     stored. nullptr otherwise.
 	 */
 	template<typename Component>
-	Component *at_p() {
+	Component *find() {
 		static_assert(detail::is_valid_component<Component>(), "Supplied type for Component is not valid as a component.");
 
 		auto it = find_<Component>();
@@ -299,7 +299,7 @@ public:
 			static_cast<component<typename Component::component_base_type>*>(it->second.get()));
 	}
 
-	/** \brief Fetches a component.
+	/** \brief Finds a component.
 	 *
 	 * \tparam Component
 	 *     The type of the component to be fetched.
@@ -309,8 +309,8 @@ public:
 	 *     stored. nullptr otherwise.
 	 */
 	template<typename Component>
-	const Component *at_p() const {
-		return const_cast<component_container&>(*this).at_p<Component>();
+	const Component *find() const {
+		return const_cast<component_container&>(*this).find<Component>();
 	}
 
 	/** \brief Checks whether the container contains a specific component.
@@ -323,7 +323,7 @@ public:
 	 */
 	template<typename Component>
 	bool has() const {
-		return at_p<Component>();
+		return find<Component>();
 	}
 
 	/** \brief Removes a component.
@@ -365,13 +365,17 @@ public:
 /** \brief Enables derived classes to hold components.
  */
 struct takes_components {
+	/// \brief Stores components
 	component_container components;
 
 protected:
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 	/// \brief Constructs the component holder.
 	takes_components() = default;
 	/// \brief Destructs the component holder.
 	~takes_components() = default;
+#pragma GCC diagnostic pop
 };
 
 }

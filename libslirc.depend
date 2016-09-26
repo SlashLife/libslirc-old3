@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1474709694 source:d:\github\libslirc\src\event.cpp
+1474891898 source:d:\github\libslirc\src\event.cpp
 	"../include/slirc/event.hpp"
 	"../include/slirc/irc.hpp"
+	"../include/slirc/util/scoped_swap.hpp"
 
-1474709365 d:\github\libslirc\include\slirc\event.hpp
+1474897577 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>
@@ -19,10 +20,10 @@
 	"component_container.hpp"
 	"exceptions.hpp"
 
-1474644897 d:\github\libslirc\include\slirc\detail\system.hpp
+1474879490 d:\github\libslirc\include\slirc\detail\system.hpp
 	<cassert>
 
-1473376774 d:\github\libslirc\include\slirc\component_container.hpp
+1474879675 d:\github\libslirc\include\slirc\component_container.hpp
 	"detail/system.hpp"
 	<cassert>
 	<memory>
@@ -38,11 +39,55 @@
 1473189170 d:\github\libslirc\include\slirc\component.hpp
 	"detail/system.hpp"
 
-1474643686 d:\github\libslirc\include\slirc\exceptions.hpp
+1474802517 d:\github\libslirc\include\slirc\exceptions.hpp
 	"detail/system.hpp"
 	<stdexcept>
 
-1474706558 d:\github\libslirc\include\slirc\irc.hpp
+1474879234 d:\github\libslirc\include\slirc\irc.hpp
 	"detail/system.hpp"
+	<map>
+	<memory>
+	<typeindex>
+	<typeinfo>
+	<type_traits>
+	<boost/utility.hpp>
+	"component_container.hpp"
 	"event.hpp"
+	"module.hpp"
+	"apis/event_manager.hpp"
+
+1474869247 d:\github\libslirc\include\slirc\module.hpp
+	<cassert>
+
+1474896859 d:\github\libslirc\include\slirc\apis\event_manager.hpp
+	"../detail/system.hpp"
+	<chrono>
+	<functional>
+	<vector>
+	"../component.hpp"
+	"../event.hpp"
+	"../module.hpp"
+	"../modules/event_manager.hpp"
+
+1474890090 source:d:\github\libslirc\src\modules\event_manager.cpp
+	"../../include/slirc/modules/event_manager.hpp"
+	<algorithm>
+	<deque>
+	<iterator>
+	<unordered_map>
+	<mutex>
+	<boost/signals2.hpp>
+	"../../include/slirc/event.hpp"
+
+1474867737 source:d:\github\libslirc\src\irc.cpp
+	"../include/slirc/irc.hpp"
+	"../include/slirc/modules/event_manager.hpp"
+
+1474896457 d:\github\libslirc\include\slirc\modules\event_manager.hpp
+	"../detail/system.hpp"
+	"../apis/event_manager.hpp"
+
+1474893331 d:\github\libslirc\include\slirc\util\scoped_swap.hpp
+	"../detail/system.hpp"
+	<utility>
 

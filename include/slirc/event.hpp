@@ -49,13 +49,24 @@
 #include "component_container.hpp"
 #include "exceptions.hpp"
 
-namespace slirc {
-
-class irc;
-
-// only declared, never defined!
-template<typename NotAnEventId>
-constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId);
+/** \def SLIRC_REGISTER_EVENT_ID_ENUM(idtype)
+ *
+ * \brief Enables usage of an enum type as event ids.
+ *
+ * \param idtype The (possibly qualified) name of the
+ *               enum type to be used as event ids.
+ *
+ * \code
+ *     namespace my_namespace {
+ *         enum some_events: slirc::event::underlying_id_type { event1 };
+ *         enum more_events: slirc::event::underlying_id_type { event2 };
+ *
+ *         SLIRC_REGISTER_EVENT_ID_ENUM( some_events );
+ *     }
+ *     // also possible:
+ *     SLIRC_REGISTER_EVENT_ID_ENUM( my_namespace::more_events );
+ * \endcode
+ */
 
 #undef SLIRC_REGISTER_EVENT_ID_ENUM
 #define SLIRC_REGISTER_EVENT_ID_ENUM(idtype) \
@@ -64,6 +75,14 @@ constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId)
 	>::value, \
 		#idtype " is of wrong underlying type to be used as an event id type"); \
 	constexpr std::true_type slirc_impldetail_enable_as_event_id_type(idtype)
+
+namespace slirc {
+
+class irc;
+
+// only declared, never defined!
+template<typename NotAnEventId>
+constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId);
 
 /** \brief An IRC event.
  *
@@ -188,6 +207,7 @@ public:
 	 */
 	struct id_type {
 		friend struct std::less<id_type>;
+		friend struct std::hash<id_type>;
 
 		/** \brief Callback type for matching event ids.
 		 */
@@ -211,14 +231,17 @@ public:
 
 		/** \brief Constructs an event id of a specific type.
 		 *
-		 * \tparam IdType The type of the enum value passed as an event id.
-		 *     Must fulfill the requirements for an event id type. (See
-		 *     description of this class for details.)
+		 * \tparam IdType The type of an enum registed for use as event ids.
 		 *
 		 * \param id The event id to be used.
 		 */
 		template<typename IdType>
+#ifdef SLIRC_DOXYGEN
+		// don't list the enum type check as part of the API
 		id_type(IdType id)
+#else
+		id_type(IdType, typename std::enable_if<std::is_enum<IdType>::value, int>::type=0)
+#endif
 		: index(typeid(IdType))
 		, id(static_cast<underlying_id_type>(id)) {
 			static_assert(is_valid_id_type<IdType>(),
@@ -473,7 +496,8 @@ public:
 	 *
 	 * \tparam Iterator The type of the iterators representing the range.
 	 *
-	 * \param id The event id to queue this event as.
+	 * \param begin The begin of the range of event ids to be added
+	 * \param end One past the end of the range of event ids to be added
 	 * \param strategy What to do in case of an existing duplicate of the
 	 *     given event it:
 	 *     - \c discard to not insert the event id if an equivalent event id
@@ -521,6 +545,85 @@ public:
 		}
 
 		append_to_queue_unchecked(add_ids, position);
+	}
+
+	/** \brief Queues event as different ids.
+	 *
+	 * Queues the event as the ids specified by the interval \c begin..end.
+	 *
+	 * Equivalent to <tt>queue_as(\a begin, \a end, discard, \a position, \a result_callback)</tt>.
+	 *
+	 * \tparam Iterator The type of the iterators representing the range.
+	 *
+	 * \param begin The begin of the range of event ids to be added
+	 * \param end One past the end of the range of event ids to be added
+	 * \param position Where in the queue to add the new event id:
+	 *     - \c at_back to queue this event last in the queue,
+	 *     - \c at_front to queue this event next in the queue.
+	 * \param result_callback A function that takes the iterator to an event id
+	 *     as well as the result from attempting to queue this id.
+	 */
+	template<typename Iterator>
+	inline void queue_as(
+		Iterator begin, Iterator end,
+		queuing_position position,
+		std::function<void(Iterator, queuing_result)> result_callback
+			= [](Iterator, queuing_result){}
+	) {
+		queue_as(begin, end, discard, position, result_callback);
+	}
+
+	/** \brief Queues event as different ids.
+	 *
+	 * Queues the event as the ids specified by the interval \c begin..end.
+	 *
+	 * Equivalent to <tt>queue_as(\a begin, \a end, \a strategy, at_back, \a result_callback)</tt>.
+	 *
+	 * \tparam Iterator The type of the iterators representing the range.
+	 *
+	 * \param begin The begin of the range of event ids to be added
+	 * \param end One past the end of the range of event ids to be added
+	 * \param strategy What to do in case of an existing duplicate of the
+	 *     given event it:
+	 *     - \c discard to not insert the event id if an equivalent event id
+	 *            is queued already; discarded will be returned in this
+	 *            case, queued otherwise,
+	 *     - \c replace to remove any equivalent event id that is queued
+	 *            already; replaced will be returned if any event id was
+	 *            removed from the queue, queued otherwise
+	 *     - \c duplicate to ignore existing equivalent event ids; queuing
+	 *            an event with this strategy will always return queued.
+	 * \param result_callback A function that takes the iterator to an event id
+	 *     as well as the result from attempting to queue this id.
+	 */
+	template<typename Iterator>
+	inline void queue_as(
+		Iterator begin, Iterator end,
+		queuing_strategy strategy,
+		std::function<void(Iterator, queuing_result)> result_callback
+	) {
+		queue_as(begin, end, strategy, at_back, result_callback);
+	}
+
+	/** \brief Queues event as different ids.
+	 *
+	 * Queues the event as the ids specified by the interval \c begin..end.
+	 *
+	 * Equivalent to <tt>queue_as(\a begin, \a end, discard, at_back, \a result_callback)</tt>.
+	 *
+	 * \tparam Iterator The type of the iterators representing the range.
+	 *
+	 * \param begin The begin of the range of event ids to be added
+	 * \param end One past the end of the range of event ids to be added
+	 * \param result_callback A function that takes the iterator to an event id
+	 *     as well as the result from attempting to queue this id.
+	 */
+	template<typename Iterator>
+	inline void queue_as(
+		Iterator begin, Iterator end,
+		std::function<void(Iterator, queuing_result)> result_callback
+	) {
+		queue_as(begin, end, discard, at_back, result_callback);
 	}
 
 	/** \brief Removes event ids from the queue.
@@ -571,6 +674,17 @@ public:
 	 */
 	bool is_queued_as(id_type::matcher matcher) const;
 
+	/** \brief Queues this event to its irc contexts main event queue.
+	 */
+	void queue();
+
+	/** \brief Registers another event to be queued right after this one.
+	 *
+	 * Events registered using this function will be handled before the next
+	 * event of the main queue.
+	 */
+	void afterwards(pointer);
+
 	/** \brief Pops the next event id from the queue.
 	 *
 	 * \return The next event id this event is queued as or an invalid event id
@@ -606,6 +720,26 @@ namespace std {
 			return (lhs.index != rhs.index)
 				? std::less<decltype(lhs.index)>()(lhs.index, rhs.index)
 				: std::less<decltype(lhs.id)>()(lhs.id, rhs.id);
+		}
+	};
+
+	/** \brief Specialization of std::hash for slirc::event::id_type
+	 */
+	template<>
+	struct hash<::slirc::event::id_type> {
+		/** \brief Hashes an event id.
+		 *
+		 * \param id The id to hash.
+		 *
+		 * \return The hash for id.
+		 */
+		std::size_t operator()(
+			const ::slirc::event::id_type &id
+		) const {
+			if (!id.index) return 0;
+			return
+				std::hash<std::type_index>()(*id.index) ^
+				std::hash<slirc::event::underlying_id_type>()(id.id);
 		}
 	};
 }

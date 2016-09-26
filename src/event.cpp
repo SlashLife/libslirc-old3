@@ -23,13 +23,13 @@
 #include "../include/slirc/event.hpp"
 
 #include "../include/slirc/irc.hpp"
+#include "../include/slirc/util/scoped_swap.hpp"
 
 slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original_id_)
 : irc(irc_)
-, components()
 , original_id(original_id_)
 , current_id(current_id_mutable)
-, current_id_mutable(original_id_)
+, current_id_mutable()
 , queued_ids()
 , next_id_index(0) {
 	if (!original_id_) {
@@ -38,22 +38,70 @@ slirc::event::event(constructor_tag, slirc::irc &irc_, id_type original_id_)
 	queued_ids.push_back(original_id_);
 }
 
-/*
-void slirc::event::handle();
-void slirc::event::handle_as(id_type id);
+void slirc::event::handle() {
+	irc.event_manager().handle(shared_from_this());
+}
+
+void slirc::event::handle_as(id_type id) {
+	util::scoped_swap<id_type> id_swap(current_id_mutable, id);
+	irc.event_manager().handle_as(shared_from_this());
+}
 
 slirc::event::queuing_result slirc::event::queue_as(
 	id_type id, queuing_strategy strategy, queuing_position position
-);
+) {
+	id_queue_type add_ids;
+	queuing_result result = prepare_append_queue(add_ids, id, strategy);
+	if (result == queued) {
+		append_to_queue_unchecked(add_ids, position);
+	}
+	return result;
+}
 
-bool slirc::event::unqueue(id_type id);
-bool slirc::event::unqueue(id_type::matcher matcher);
+bool slirc::event::unqueue(id_type id) {
+	auto it = std::remove(
+		queued_ids.begin(), queued_ids.end(),
+		id
+	);
+	if (it == queued_ids.end()) {
+		return false;
+	}
+	queued_ids.erase(it, queued_ids.end());
+	return true;
+}
 
-bool slirc::event::is_queued_as(id_type id);
-bool slirc::event::is_queued_as(id_type::matcher matcher);
+bool slirc::event::unqueue(id_type::matcher matcher) {
+	auto it = std::remove_if(
+		queued_ids.begin(), queued_ids.end(),
+		matcher
+	);
+	if (it == queued_ids.end()) {
+		return false;
+	}
+	queued_ids.erase(it, queued_ids.end());
+	return true;
+}
 
-slirc::event::id_type slirc::event::pop_next_queued_id();
-*/
+bool slirc::event::is_queued_as(id_type id) const {
+	return queued_ids.end() != std::find(
+		queued_ids.begin(), queued_ids.end(),
+		id
+	);
+}
+
+bool slirc::event::is_queued_as(id_type::matcher matcher) const {
+	return queued_ids.end() != std::find_if(
+		queued_ids.begin(), queued_ids.end(),
+		matcher
+	);
+}
+
+slirc::event::id_type slirc::event::pop_next_queued_id() {
+	if (next_id_index < queued_ids.size()) {
+		return queued_ids[next_id_index++];
+	}
+	return id_type();
+}
 
 slirc::event::queuing_result slirc::event::prepare_append_queue(
 	id_queue_type &add_ids, id_type newid, queuing_strategy strategy

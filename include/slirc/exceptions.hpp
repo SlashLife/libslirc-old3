@@ -60,6 +60,27 @@ struct invalid_event_id: std::logic_error {
 	invalid_event_id(): std::logic_error("An invalid type id was used where a valid type id is required.") {}
 };
 
+/** \brief Signals the presence of a conflicting module on an operation on
+ *    slirc::irc.
+ *
+ * Thrown by slirc::irc when the requested operation could not be completed due
+ * to the presence of a conflicting module in the irc context.
+ *
+ * On \c load, a conflicting module is any module derived from the same
+ * slirc::module::module_base_api_type.
+ *
+ * On retrieval (\c get) or removal (\c unload) operations, a conflicting module
+ * is one that is not identical to or derived from the requested module type.
+ *
+ * To bypass failure by conflicts on retrieval or removal operations, you can
+ * run the operation on the modules \c module_base_api_type instead.
+ *
+ * \see slirc::module::module_base_api_type
+ */
+struct module_conflict: std::logic_error {
+	module_conflict(): std::logic_error("The irc context contains a conflicting module.") {}
+};
+
 }
 }
 

@@ -6,6 +6,18 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="apis/event_manager">
+				<Option output="test/bin/test.component_container" prefix_auto="1" extension_auto="1" />
+				<Option object_output="test/obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
 			<Target title="component_container">
 				<Option output="test/bin/test.component_container" prefix_auto="1" extension_auto="1" />
 				<Option object_output="test/obj/" />
@@ -19,6 +31,18 @@
 				</Linker>
 			</Target>
 			<Target title="event">
+				<Option output="test/bin/test.event" prefix_auto="1" extension_auto="1" />
+				<Option object_output="test/obj/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="irc">
 				<Option output="test/bin/test.event" prefix_auto="1" extension_auto="1" />
 				<Option object_output="test/obj/" />
 				<Option type="1" />
@@ -56,18 +80,24 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="all" targets="component_container;event;module;testcase;" />
+			<Add alias="all" targets="component_container;module;testcase;event;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DSLIRC_DEBUG" />
 		</Compiler>
+		<Unit filename="test/test.apis.event_manager.cpp">
+			<Option target="apis/event_manager" />
+		</Unit>
 		<Unit filename="test/test.component_container.cpp">
 			<Option target="component_container" />
 		</Unit>
 		<Unit filename="test/test.event.cpp">
 			<Option target="event" />
+		</Unit>
+		<Unit filename="test/test.irc.cpp">
+			<Option target="irc" />
 		</Unit>
 		<Unit filename="test/test.module.cpp">
 			<Option target="module" />

@@ -29,55 +29,281 @@
 
 #include <map>
 #include <memory>
+#include <typeindex>
+#include <typeinfo>
 #include <type_traits>
 
 #include <boost/utility.hpp>
 
 #include "component_container.hpp"
 #include "event.hpp"
+#include "module.hpp"
+#include "apis/event_manager.hpp"
 
 namespace slirc {
 
-namespace apis {
-	struct event_queue;
-}
-
-/**
+/** \brief An IRC context.
+ *
+ * This class models an IRC context, i.e. a single IRC connection.
+ *
+ * All modules associated with an IRC connection (including the module
+ * representing the actual network connection itself) are loaded into this
+ * class.
+ *
+ * Many entities in slirc are associated with a specific IRC context, e.g.
+ * events and modules.
  */
 class SLIRCAPI irc: public takes_components, private boost::noncopyable {
-	typedef std::map<std::type_index, >
+	irc(const irc &)=delete; // -Weffc++
+	irc &operator=(const irc &)=delete; // -Weffc++
+
+	typedef std::map<std::type_index, std::unique_ptr<module_base>> module_container_type;
+	module_container_type modules_;
+	apis::event_manager *event_manager_;
+
+	template<typename Module>
+	static constexpr bool is_valid_module_type() {
+		return
+			std::is_base_of<typename Module::module_base_api_type, Module>::value &&
+			std::is_base_of<module<typename Module::module_base_api_type>, typename Module::module_base_api_type>::value &&
+			std::is_base_of<module_base, module<typename Module::module_base_api_type>>::value;
+	}
+
+	template<typename Module>
+	inline std::type_index module_index() { return typeid(typename Module::module_base_api_type); }
+
+	// module api backend
+	module_base *find_(std::type_index);
+	void load_(std::type_index, std::unique_ptr<module_base>);
+	bool unload_(std::type_index);
+
+	template<typename Module>
+	inline module_base *find_() { return find_(module_index<Module>()); }
+
 public:
+	/** \brief Constructs an irc context.
+	 *
+	 * \note After construction is finished, the IRC context will contain a
+	 *       module implementing slirc::apis::event_manager.
+	 */
 	irc();
+
+	/** \brief Destructs an irc context.
+	 *
+	 * \note During destruction, all modules are unloaded with the
+	 *       active implementation of slirc::apis::event_manager being
+	 *       unloaded last.
+	 */
+	~irc();
 
 
 
 	// Module API
 
+	/** \brief Loads a new module into the irc context.
+	 *
+	 * Constructs and loads a module of the specified type. The modules
+	 * constructor will be called with \c *this as the first argument.
+	 * If you pass any arguments to this function they will be appended to the
+	 * constructor call.
+	 *
+	 * If the constructor throws an exception, the state of the irc context is
+	 * not changed and the exception is handed through to the caller.
+	 *
+	 * If a module implementing the same \c module_base_api_type is loaded
+	 * into this irc context already, it is not being replaced. No new module
+	 * is constructed and an exception of type slirc::exceptions::module_conflict
+	 * is thrown.
+	 *
+	 * \tparam Module The type of the module to load.
+	 *
+	 * \tparam Args... The types of the additional arguments to be passed to
+	 *         the modules constructor.
+	 *
+	 * \param args Additional arguments to be passed to the modules constructor.
+	 *
+	 * \return A reference to the newly constructed module.
+	 *
+	 * \throw slirc::exceptions::module_conflict if another module of the
+	 *     same \c module_base_api_type is loaded.
+	 *
+	 * \throw any exception thrown during construction of the module
+	 */
 	template<typename Module, typename... Args>
-	Module &load(Args... && args); // TODO: impl
+	Module &load(Args&& ...args) {
+		static_assert(is_valid_module_type<Module>(), "Must be called with a valid module type!");
+		if (find_<Module>()) throw exceptions::module_conflict();
 
-	template<typename Module>
-	Module &unload(); // TODO: impl
+		Module *realmod=nullptr;
+		{ std::unique_ptr<module_base> mod(realmod = new Module(*this, std::forward<Args>(args)...));
+			load_(module_index<Module>(), std::move(mod));
+		}
 
+		if (std::is_base_of<apis::event_manager, Module>::value) {
+			event_manager_ = static_cast<apis::event_manager*>(realmod);
+		}
+
+		SLIRC_ASSERT( realmod && "Module was not constructed (and did not throw)?!" );
+		return *realmod;
+	}
+
+	/** \brief Unloads a module from the irc context.
+	 *
+	 * Unloads the module with the same \c module_base_api_type as the given
+	 * module iff \c Module is either the exact type of the module currently
+	 * loaded or a derived class and returns true\c .
+	 *
+	 * If no module with the same \c module_base_api_type is loaded, this
+	 * function returns \c false. If one is loaded, but does not fulfill the
+	 * mentioned criteria, an exception of type slirc::exception::module_conflict
+	 * is thrown.
+	 *
+	 * Regardless of the return value, if this function does not throw, the
+	 * slot for the given \c module_base_api_type will be free after this
+	 * function returns.
+	 *
+	 * To ensure that a module occupying a certain slot is unloaded, you can
+	 * call this function to unload the \c module_base_api_type directly, in
+	 * which case no exception will be thrown:
+	 * \code
+	 *     slirc::irc irc;
+	 *     irc.unload<some_module::module_base_api_type>();
+	 * \endcode
+	 *
+	 * \tparam Module The type of the module to be unloaded.
+	 *
+	 * \return
+	 *     - \c true if the module was unloaded,
+	 *     - \c false if no module with the requested \c module_base_api_type
+	 *          was loaded
+	 */
 	template<typename Module>
-	Module &get(); // TODO: impl
+	bool unload() {
+		static_assert(is_valid_module_type<Module>(), "Must be called with a valid module type!");
+
+		if (std::is_base_of<apis::event_manager, Module>::value) {
+			event_manager_ = nullptr;
+		}
+
+		return unload_(module_index<Module>());
+	}
+
+	/** \brief Finds a module within the irc context.
+	 *
+	 * If a module of the requested modules \c module_base_api_type is found
+	 * and compatible (same or derived from) \c Module, a pointer to it is
+	 * returned. Otherwise retuns a \c nullptr.
+	 *
+	 * \tparam Module The type of the module to find.
+	 *
+	 * \return
+	 *     - \c a pointer to the loaded module,
+	 *     - \c nullptr if no module with the same \c module_base_api_type is
+	 *          loaded or the loaded module is not derived from \c Module
+	 */
+	template<typename Module>
+	Module *find() {
+		static_assert(is_valid_module_type<Module>(), "Must be called with a valid module type!");
+		return dynamic_cast<Module*>(find_<Module>());
+	}
+
+	/** \brief Finds a module within the irc context.
+	 *
+	 * If a module of the requested modules \c module_base_api_type is found
+	 * and compatible (same or derived from) \c Module, a pointer to it is
+	 * returned. Otherwise retuns a \c nullptr.
+	 *
+	 * \tparam Module The type of the module to find.
+	 *
+	 * \return
+	 *     - \c a pointer to the loaded module,
+	 *     - \c nullptr if no module with the same \c module_base_api_type is
+	 *          loaded or the loaded module is not derived from \c Module
+	 */
+	template<typename Module>
+	const Module *find() const {
+		return const_cast<irc&>(*this).find<Module>();
+	}
+
+	/** \brief Returns a module within the irc context.
+	 *
+	 * If a module of the requested modules \c module_base_api_type is found
+	 * and compatible (same or derived from) \c Module, a reference to it is
+	 * returned. Otherwise throws a \c std::range_error if no module was found
+	 * or an slirc::exceptions::module_conflict if the module found is not
+	 * derived from \c Module.
+	 *
+	 * \tparam Module The type of the module to return.
+	 *
+	 * \return A reference to the requested module.
+	 */
+	template<typename Module>
+	Module &get() {
+		static_assert(is_valid_module_type<Module>(), "Must be called with a valid module type!");
+
+		module_base *rawmod = find_<Module>();
+		if (!rawmod) throw std::range_error("Requested module not found.");
+
+		Module *realmod = dynamic_cast<Module*>(rawmod);
+		if (!realmod) throw exceptions::module_conflict();
+
+		return *realmod;
+	}
+
+	/** \brief Returns a module within the irc context.
+	 *
+	 * If a module of the requested modules \c module_base_api_type is found
+	 * and compatible (same or derived from) \c Module, a reference to it is
+	 * returned. Otherwise throws a \c std::range_error if no module was found
+	 * or an slirc::exceptions::module_conflict if the module found is not
+	 * derived from \c Module.
+	 *
+	 * \tparam Module The type of the module to return.
+	 *
+	 * \return A reference to the requested module.
+	 */
+	template<typename Module>
+	const Module &get() const {
+		return const_cast<irc&>(*this).get<Module>();
+	}
 
 
 
 	// event api
 
-	inline apis::event_queue &event_queue() const {
-		SLIRC_ASSERT( event_queue_ &&
-			"IRC context should never be without a loaded event queue module!" );
-		return *event_queue_;
+	/** \brief Gets the event queue for this IRC context.
+	 *
+	 * Equivalent to <tt>get<apis::event_manager>()</tt>
+	 *
+	 * \return The event manager for this irc context.
+	 */
+	inline apis::event_manager &event_manager() {
+		SLIRC_ASSERT( event_manager_ &&
+			"IRC context should never be without a loaded event manager module!" );
+		return *event_manager_;
 	}
 
+	/** \brief Gets the event queue for this IRC context.
+	 *
+	 * Equivalent to <tt>get<apis::event_manager>()</tt>
+	 *
+	 * \return The event manager for this irc context.
+	 */
+	inline const apis::event_manager &event_manager() const {
+		SLIRC_ASSERT( event_manager_ &&
+			"IRC context should never be without a loaded event manager module!" );
+		return *event_manager_;
+	}
+
+	/** \brief Creates an event associated with this IRC context.
+	 *
+	 * \param id The original event type id identifying the new event.
+	 *
+	 * \return A pointer to the new event.
+	 */
 	inline event::pointer make_event(event::id_type id) {
 		return event::make_event(*this, id);
 	}
-
-private:
-	apis::event_queue *event_queue_;
 };
 
 }

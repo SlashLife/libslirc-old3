@@ -20,48 +20,59 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#include "../include/slirc/irc.hpp"
+#include "../include/slirc/modules/event_manager.hpp"
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
-
-#include "detail/system.hpp"
-
-#include <cassert>
-
-namespace slirc {
-
-/** \brief Defines the base interface for modules.
- */
-struct SLIRCAPI module_base {
-	/** \brief A reference to the IRC context this module is loaded into.
-	 */
-	::slirc::irc &irc;
-	virtual ~module_base()=default;
-
-protected:
-	/** \brief Constructs the module base.
-	 */
-	module_base(::slirc::irc &irc_)
-	: irc(irc_) {}
-};
-
-/** \brief Defines the base for specific modules.
- *
- * \note Only one module with the same \c module_base_api_type can be loaded
- *       into the same IRC context at any time.
- */
-template<typename ModuleApi>
-struct module: public module_base {
-	friend struct ::slirc::irc;
-
-	/// \brief The base
-	typedef ModuleApi module_base_api_type;
-
-protected:
-	using module_base::module_base;
-};
-
+slirc::irc::irc()
+: modules_()
+, event_manager_(nullptr) {
+	load<modules::event_manager>();
 }
 
-#endif // SLIRC_MODULE_HPP_INCLUDED
+slirc::irc::~irc() {
+	// TODO: Possibly do multiple passes and let modules order their own
+	//       unload order?
+	{ auto begin=modules_.begin();
+		while(begin != modules_.end()) {
+			if (begin->first == typeid(apis::event_manager)) {
+				++begin;
+			}
+			else {
+				begin = modules_.erase(begin);
+			}
+		}
+	}
+
+	{ auto begin=modules_.begin();
+		while(begin != modules_.end()) {
+			begin = modules_.erase(begin);
+		}
+	}
+}
+
+slirc::module_base *slirc::irc::find_(std::type_index ti) {
+	auto it = modules_.find(ti);
+	return (it == modules_.end())
+		? nullptr
+		: it->second.get();
+}
+
+void slirc::irc::load_(std::type_index ti, std::unique_ptr<module_base> module) {
+	SLIRC_ASSERT( module && "Must not attempt to load 'no module'" );
+
+	std::unique_ptr<module_base> &curmodule = modules_[ti];
+	SLIRC_ASSERT( !curmodule && "Must not replace an already loaded module!" );
+
+	curmodule = std::move(module);
+}
+
+bool slirc::irc::unload_(std::type_index ti) {
+	auto it = modules_.find(ti);
+
+	if (it == modules_.end()) {
+		return false;
+	}
+
+	modules_.erase(it);
+	return true;
+}

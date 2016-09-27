@@ -27,12 +27,9 @@
 #include "../include/slirc/module.hpp"
 #include "../include/slirc/apis/event_manager.hpp"
 
-
-
 #include "../src/event.cpp"
 #include "../src/irc.cpp"
-
-
+#include "../src/modules/event_manager.cpp"
 
 struct my_component: slirc::component<my_component> {};
 
@@ -41,7 +38,7 @@ SCENARIO("irc - components", "") {
 		slirc::irc irc;
 
 		WHEN("putting a component into it") {
-			irc.components.add(my_component());
+			irc.components.insert(my_component());
 
 			THEN("the irc context contains that component") {
 				REQUIRE( irc.components.has<my_component>() );
@@ -52,7 +49,7 @@ SCENARIO("irc - components", "") {
 
 
 
-struct module_base: slirc::module<module_base> { using slirc::module<module_base>::module; };
+struct module_base: slirc::module<module_base> { module_base(slirc::irc &irc_): slirc::module<module_base>(irc_) {} };
 struct module_derived: module_base { using module_base::module_base; };
 struct module_derived_2: module_base { using module_base::module_base; };
 
@@ -106,7 +103,7 @@ SCENARIO("irc - module API", "") {
 				REQUIRE_FALSE( irc.find<module_derived>() );
 
 				REQUIRE_THROWS_AS( irc.get<module_track_lifetime>(), std::range_error );
-				REQUIRE_THROWS_AS( irc.get<module_derived>(), std::range_error );
+				REQUIRE_THROWS_AS( irc.get<module_derived>(), slirc::exceptions::module_conflict );
 			}
 
 			THEN("attemping to unload an unrelated module will fail returning false") {
@@ -119,8 +116,8 @@ SCENARIO("irc - module API", "") {
 
 			THEN("an unrelated module can be loaded (and then unloaded)") {
 				module_track_lifetime::state state = module_track_lifetime::uninitialized;
-				REQUIRE_NOTHROW( irc.load<module_track_lifetime>(module_track_lifetime) );
-				REQUIRE( irc.unload<module_track_lifetime>(module_track_lifetime) );
+				REQUIRE_NOTHROW( irc.load<module_track_lifetime>(state) );
+				REQUIRE( irc.unload<module_track_lifetime>() );
 			}
 
 			THEN("the module can successfully be unloaded again, returning true") {
@@ -156,8 +153,8 @@ SCENARIO("irc - module API", "") {
 
 			THEN("an unrelated module can be loaded (and then unloaded)") {
 				module_track_lifetime::state state = module_track_lifetime::uninitialized;
-				REQUIRE_NOTHROW( irc.load<module_track_lifetime>(module_track_lifetime) );
-				REQUIRE( irc.unload<module_track_lifetime>(module_track_lifetime) );
+				REQUIRE_NOTHROW( irc.load<module_track_lifetime>(state) );
+				REQUIRE( irc.unload<module_track_lifetime>() );
 			}
 
 			THEN("the module can successfully be unloaded by its base type, returning true") {
@@ -168,13 +165,13 @@ SCENARIO("irc - module API", "") {
 		WHEN("loading and unloading a module") {
 			module_track_lifetime::state state = module_track_lifetime::uninitialized;
 
+			REQUIRE_NOTHROW( irc.load<module_track_lifetime>(state) );
 			THEN("while loading a module the module will be constructed") {
-				REQUIRE_NOTHROW( irc.load<module_track_lifetime>(module_track_lifetime) );
 				REQUIRE( state == module_track_lifetime::constructed );
 			}
 
+			REQUIRE( irc.unload<module_track_lifetime>() );
 			THEN("while unloading a module the module will be destructed") {
-				REQUIRE( irc.unload<module_track_lifetime>(module_track_lifetime) );
 				REQUIRE( state == module_track_lifetime::destructed );
 			}
 		}
@@ -190,15 +187,16 @@ SLIRC_REGISTER_EVENT_ID_ENUM(test_events);
 
 SCENARIO("irc - event API", "") {
 	GIVEN("an irc context") {
-		slirc irc;
+		slirc::irc irc;
+
 		WHEN("default constructed") {
-			slirc::apis::event_manager *em = nullptr;
 
 			THEN("it contains an event_manager module") {
-				REQUIRE( em = irc.has<slirc::apis::event_manager>() );
+				REQUIRE( irc.find<slirc::apis::event_manager>() );
 			}
 
 			THEN("the event_manager module can be accessed through the special getter") {
+				slirc::apis::event_manager *em = irc.find<slirc::apis::event_manager>();
 				REQUIRE( em == &irc.event_manager() );
 			}
 		}

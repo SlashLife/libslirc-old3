@@ -140,10 +140,10 @@ public:
 		}
 
 		if (std::is_base_of<apis::event_manager, Module>::value) {
-			event_manager_ = static_cast<apis::event_manager*>(realmod);
+			event_manager_ = static_cast<apis::event_manager*>(static_cast<module_base*>(realmod));
 		}
 
-		SLIRC_ASSERT( realmod && "Module was not constructed (and did not throw)?!" );
+		SLIRC_ASSERT( realmod && "Module was not constructed (but did not throw)?!" );
 		return *realmod;
 	}
 
@@ -180,6 +180,13 @@ public:
 	template<typename Module>
 	bool unload() {
 		static_assert(is_valid_module_type<Module>(), "Must be called with a valid module type!");
+
+		auto modp = find_<Module>();
+		if (!modp) return false;
+
+		if (!dynamic_cast<Module*>(modp)) {
+			throw exceptions::module_conflict();
+		}
 
 		if (std::is_base_of<apis::event_manager, Module>::value) {
 			event_manager_ = nullptr;

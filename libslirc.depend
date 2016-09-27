@@ -4,7 +4,7 @@
 	"../include/slirc/irc.hpp"
 	"../include/slirc/util/scoped_swap.hpp"
 
-1474897577 d:\github\libslirc\include\slirc\event.hpp
+1474921862 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>
@@ -16,14 +16,14 @@
 	<vector>
 	<optional>
 	<experimental/optional>
-	<boost/utility.hpp>
 	"component_container.hpp"
 	"exceptions.hpp"
+	"util/noncopyable.hpp"
 
 1474879490 d:\github\libslirc\include\slirc\detail\system.hpp
 	<cassert>
 
-1474879675 d:\github\libslirc\include\slirc\component_container.hpp
+1474921708 d:\github\libslirc\include\slirc\component_container.hpp
 	"detail/system.hpp"
 	<cassert>
 	<memory>
@@ -32,9 +32,9 @@
 	<type_traits>
 	<unordered_map>
 	<utility>
-	<boost/utility.hpp>
 	"component.hpp"
 	"exceptions.hpp"
+	"util/noncopyable.hpp"
 
 1473189170 d:\github\libslirc\include\slirc\component.hpp
 	"detail/system.hpp"
@@ -43,7 +43,7 @@
 	"detail/system.hpp"
 	<stdexcept>
 
-1474879234 d:\github\libslirc\include\slirc\irc.hpp
+1474910822 d:\github\libslirc\include\slirc\irc.hpp
 	"detail/system.hpp"
 	<map>
 	<memory>
@@ -56,7 +56,8 @@
 	"module.hpp"
 	"apis/event_manager.hpp"
 
-1474869247 d:\github\libslirc\include\slirc\module.hpp
+1474903344 d:\github\libslirc\include\slirc\module.hpp
+	"detail/system.hpp"
 	<cassert>
 
 1474896859 d:\github\libslirc\include\slirc\apis\event_manager.hpp
@@ -69,13 +70,15 @@
 	"../module.hpp"
 	"../modules/event_manager.hpp"
 
-1474890090 source:d:\github\libslirc\src\modules\event_manager.cpp
+1474902248 source:d:\github\libslirc\src\modules\event_manager.cpp
 	"../../include/slirc/modules/event_manager.hpp"
 	<algorithm>
+	<condition_variable>
 	<deque>
 	<iterator>
-	<unordered_map>
+	<memory>
 	<mutex>
+	<unordered_map>
 	<boost/signals2.hpp>
 	"../../include/slirc/event.hpp"
 
@@ -90,4 +93,7 @@
 1474893331 d:\github\libslirc\include\slirc\util\scoped_swap.hpp
 	"../detail/system.hpp"
 	<utility>
+
+1474921051 d:\github\libslirc\include\slirc\util\noncopyable.hpp
+	"../detail/system.hpp"
 

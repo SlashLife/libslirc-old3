@@ -20,48 +20,37 @@
 **  If not, see <http://www.gnu.org/licenses/>.                           **
 ***************************************************************************/
 
-#pragma once
+#ifndef SLIRC_DOXYGEN
+#	error "This file exists for documentation purposes only. Do not include it!"
+#endif
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
-
-#include "detail/system.hpp"
-
-#include <cassert>
-
-namespace slirc {
-
-/** \brief Defines the base interface for modules.
- */
-struct SLIRCAPI module_base {
-	/** \brief A reference to the IRC context this module is loaded into.
-	 */
-	::slirc::irc &irc;
-	virtual ~module_base()=default;
-
-protected:
-	/** \brief Constructs the module base.
-	 */
-	module_base(::slirc::irc &irc_)
-	: irc(irc_) {}
-};
-
-/** \brief Defines the base for specific modules.
+#undef SLIRC_DEBUG
+#define SLIRC_DEBUG
+/** \def SLIRC_DEBUG
  *
- * \note Only one module with the same \c module_base_api_type can be loaded
- *       into the same IRC context at any time.
+ * \brief enables debugging in libslirc
+ *
+ * When defined, libslirc will do additional checks and internal asserts to aid
+ * debugging.
+ *
+ * \note If the standard \a assert() is disabled, libslirc will still enable
+ *       additional checks, but no assertions will be done.
  */
-template<typename ModuleApi>
-struct module: public module_base {
-	friend struct ::slirc::irc;
 
-	/// \brief The base
-	typedef ModuleApi module_base_api_type;
+#undef SLIRCAPI
+#define SLIRCAPI
+/** \def SLIRCAPI
+ *
+ * \brief marks the exported API
+ */
 
-protected:
-	using module_base::module_base;
-};
+#undef SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
+#define SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
+/** \def SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
+ *
+ * \brief Disables automatic includesion of default implementations for module APIs
+ *
+ * When defined, including any member of slirc::apis will not automatically
+ * include its default implementation.
+ */
 
-}
-
-#endif // SLIRC_MODULE_HPP_INCLUDED

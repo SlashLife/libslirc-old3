@@ -22,46 +22,71 @@
 
 #pragma once
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
+#ifndef SLIRC_UTIL_SCOPED_SWAP_HPP_INCLUDED
+#define SLIRC_UTIL_SCOPED_SWAP_HPP_INCLUDED
 
-#include "detail/system.hpp"
+#include "../detail/system.hpp"
 
-#include <cassert>
+#include <utility>
 
 namespace slirc {
+namespace util {
 
-/** \brief Defines the base interface for modules.
- */
-struct SLIRCAPI module_base {
-	/** \brief A reference to the IRC context this module is loaded into.
-	 */
-	::slirc::irc &irc;
-	virtual ~module_base()=default;
-
-protected:
-	/** \brief Constructs the module base.
-	 */
-	module_base(::slirc::irc &irc_)
-	: irc(irc_) {}
-};
-
-/** \brief Defines the base for specific modules.
+/** \brief Temporarily changes the value of a variable.
  *
- * \note Only one module with the same \c module_base_api_type can be loaded
- *       into the same IRC context at any time.
+ * On initializing an instance of this type, it will back up the current value
+ * of a variable and replace it with a given new value.
+ *
+ * On destruction the old value will be restored.
+ *
+ * If possible, values will be moved.
  */
-template<typename ModuleApi>
-struct module: public module_base {
-	friend struct ::slirc::irc;
+template<typename T>
+struct scoped_swap {
+	/** \brief Backs up the variable and sets it to a new value.
+	 *
+	 * \tparam U The type of the value to set the variable to.
+	 *
+	 * \param var The variable to swap.
+	 * \param new_value A new value to set the variable to.
+	 */
+	template<typename U>
+	scoped_swap(T &var, U new_value)
+	: var_(var)
+	, original_value_(std::move(var)) {
+		var_ = std::move(new_value);
+	}
 
-	/// \brief The base
-	typedef ModuleApi module_base_api_type;
+	/// \brief Restores the original value to the variable.
+	~scoped_swap() {
+		var_ = std::move(original_value_);
+	}
 
-protected:
-	using module_base::module_base;
+	/** \brief Check the original value.
+	 *
+	 * \return A reference to the original value.
+	 */
+	inline T &original_value() {
+		return original_value;
+	}
+
+	/** \brief Check the original value.
+	 *
+	 * \return A reference to the original value.
+	 */
+	inline const T &original_value() const {
+		return original_value;
+	}
+private:
+	scoped_swap() = delete;
+	scoped_swap(const scoped_swap &) = delete;
+	scoped_swap &operator=(const scoped_swap &) = delete;
+
+	T &var_;
+	T original_value_;
 };
 
 }
+}
 
-#endif // SLIRC_MODULE_HPP_INCLUDED
+#endif // SLIRC_UTIL_SCOPED_SWAP_HPP_INCLUDED

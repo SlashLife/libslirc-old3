@@ -44,10 +44,9 @@
 #	error Neither std::optional nor std::experimental::optional are supported
 #endif
 
-#include <boost/utility.hpp>
-
 #include "component_container.hpp"
 #include "exceptions.hpp"
+#include "util/noncopyable.hpp"
 
 /** \def SLIRC_REGISTER_EVENT_ID_ENUM(idtype)
  *
@@ -117,7 +116,7 @@ constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId)
  *   slirc::event::pointer e = irc.make_event(my_event_id);
  * \endcode
  */
-class event: public takes_components, public std::enable_shared_from_this<event>, private boost::noncopyable {
+class SLIRCAPI event: public takes_components, public std::enable_shared_from_this<event>, private util::noncopyable {
 public:
 	typedef std::shared_ptr<event> pointer; ///< A smart pointer to an event.
 	typedef std::weak_ptr<event> weak_pointer; ///< A weak pointer to an event.
@@ -206,6 +205,7 @@ public:
 	 * \include example.event.id_type.enum.cpp
 	 */
 	struct id_type {
+		friend struct ::slirc::test::test_overrides;
 		friend struct std::less<id_type>;
 		friend struct std::hash<id_type>;
 
@@ -234,13 +234,18 @@ public:
 		 * \tparam IdType The type of an enum registed for use as event ids.
 		 *
 		 * \param id The event id to be used.
+		 *
+		 * \note \a IdType is type checked. This constructor is only eligible
+		 *       for conversion of enum types. However, to make finding bugs
+		 *       easier, it will also accept enum types not registered as event
+		 *       id types and fail compilation with a descriptive error message.
 		 */
 		template<typename IdType>
 #ifdef SLIRC_DOXYGEN
 		// don't list the enum type check as part of the API
 		id_type(IdType id)
 #else
-		id_type(IdType, typename std::enable_if<std::is_enum<IdType>::value, int>::type=0)
+		id_type(IdType id, typename std::enable_if<std::is_enum<IdType>::value, int>::type=0)
 #endif
 		: index(typeid(IdType))
 		, id(static_cast<underlying_id_type>(id)) {

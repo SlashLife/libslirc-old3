@@ -36,10 +36,9 @@
 #include <unordered_map>
 #include <utility>
 
-#include <boost/utility.hpp>
-
 #include "component.hpp"
 #include "exceptions.hpp"
+#include "util/noncopyable.hpp"
 
 namespace slirc {
 
@@ -79,7 +78,7 @@ namespace detail {
  * the same time.
  */
 
-struct component_container: private boost::noncopyable {
+struct component_container: private util::noncopyable {
 	friend class ::slirc::test::test_overrides;
 
 private:

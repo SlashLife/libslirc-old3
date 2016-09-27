@@ -22,21 +22,16 @@
 
 #include "testcase.hpp"
 
-#define SLIRC_IRC_HPP_INCLUDED
-namespace slirc {
-namespace test { struct test_overrides {
-};}
-
-struct irc {
-};
-}
-
+#include "../include/slirc/irc.hpp"
 #include "../include/slirc/module.hpp"
+
+#include "../src/event.cpp"
+#include "../src/irc.cpp"
+#include "../src/modules/event_manager.cpp"
 
 struct some_module: slirc::module<some_module> {
 	some_module(slirc::irc &irc, slirc::irc *&pirc)
 	: slirc::module<some_module>(irc) {
-		SLIRC_ASSERT(false && "this tests the assertion catching");
 		pirc = &(this->irc);
 	}
 };
@@ -44,6 +39,8 @@ struct some_module: slirc::module<some_module> {
 TEST_CASE("module - irc member gets set correctly", "") {
 	slirc::irc irc;
 	slirc::irc *pirc = nullptr;
+
+	irc.load<some_module>(pirc);
 
 	REQUIRE(pirc == &irc);
 }

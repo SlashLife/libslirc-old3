@@ -27,26 +27,26 @@
 #include <iostream>
 #include <type_traits>
 
-#define SLIRC_IRC_HPP_INCLUDED
-namespace slirc {
-struct irc;
-}
-
+#include "../include/slirc/irc.hpp"
+#include "../include/slirc/event.hpp"
 #include "../include/slirc/module.hpp"
 
-namespace slirc {
-
-struct irc {
-	inline event::pointer make_event(event::id_type id) {
-		return event::make_event(*this, id);
-	}
-
-
-};
-}
-
-#include "../include/slirc/event.hpp"
+#include "../src/irc.cpp"
 #include "../src/event.cpp"
+#include "../src/modules/event_manager.cpp"
+
+namespace slirc { namespace test {
+	struct test_overrides {
+		static decltype(std::declval<slirc::event::id_type>().id) get_underlying(slirc::event::id_type id) {
+			return id.id;
+		}
+		static decltype(std::declval<slirc::event::id_type>().index) get_enumtype(slirc::event::id_type id) {
+			return id.index;
+		}
+	};
+}}
+
+
 
 typedef signed char wrong_underlying_type;
 static_assert(!std::is_same<wrong_underlying_type, slirc::event::underlying_id_type>::value,
@@ -195,10 +195,6 @@ SCENARIO("event - event ids (event::id_type)", "") {
 		WHEN("both are set to the same event") {
 			event1 = valid_id_1a;
 			event2 = valid_id_1a;
-
-			THEN("they compare equal to each other") {
-				REQUIRE( event1 == event2 );
-			}
 
 			THEN("they compare equal to each other") {
 				REQUIRE( event1 == event2 );
@@ -390,8 +386,6 @@ SCENARIO("event - event ids (event::id_type)", "") {
 	}
 }
 
-
-
 SCENARIO("event - event::handle(), event::handle_as()", "") {
 	GIVEN("an irc context and an event") {
 		slirc::irc irc;
@@ -405,6 +399,7 @@ SCENARIO("event - event::handle(), event::handle_as()", "") {
 	}
 }
 
+// TODO: TEST CASES!
 /*
 SLIRCAPI void slirc::event::handle();
 SLIRCAPI void slirc::event::handle_as(id_type id);

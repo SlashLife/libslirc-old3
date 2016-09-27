@@ -96,7 +96,7 @@ TEST_CASE("eligibility of components - detail::is_valid_component", "") {
 	}
 }
 
-SCENARIO("component_container - basic insert, at, at_p, has, remove", "") {
+SCENARIO("component_container - basic insert, at, find, has, remove", "") {
 	GIVEN("an empty component_container") {
 		slirc::component_container cc;
 		auto &cc_contents = slirc::test::test_overrides::component_containter_contents(cc);
@@ -114,13 +114,13 @@ SCENARIO("component_container - basic insert, at, at_p, has, remove", "") {
 			THEN("we can get an component A from it") {
 				REQUIRE(cc.has<component_a>());
 				REQUIRE_NOTHROW(cc.at<component_a>());
-				REQUIRE_FALSE(cc.at_p<component_a>() == nullptr);
+				REQUIRE_FALSE(cc.find<component_a>() == nullptr);
 			}
 
 			THEN("we can not get an component B from it") {
 				REQUIRE_FALSE(cc.has<component_b>());
 				REQUIRE_THROWS_AS(cc.at<component_b>(), std::out_of_range);
-				REQUIRE(cc.at_p<component_b>() == nullptr);
+				REQUIRE(cc.find<component_b>() == nullptr);
 			}
 
 			THEN("we can not insert another component A") {
@@ -151,7 +151,7 @@ SCENARIO("component_container - basic insert, at, at_p, has, remove", "") {
 			THEN("we can no longer get an component A from it") {
 				REQUIRE_FALSE(cc.has<component_a>());
 				REQUIRE_THROWS_AS(cc.at<component_a>(), std::out_of_range);
-				REQUIRE(cc.at_p<component_a>() == nullptr);
+				REQUIRE(cc.find<component_a>() == nullptr);
 			}
 
 			THEN("we can no longer remove a component A") {
@@ -202,25 +202,25 @@ SCENARIO("component_container - handling inherited components", "") {
 			THEN("the component can be accessed by its original type") {
 				REQUIRE(cc.has<component_inherit_derived_a>());
 				REQUIRE_NOTHROW(cc.at<component_inherit_derived_a>());
-				REQUIRE_FALSE(cc.at_p<component_inherit_derived_a>() == nullptr);
+				REQUIRE_FALSE(cc.find<component_inherit_derived_a>() == nullptr);
 			}
 
 			THEN("the component can be accessed by its base component type") {
 				REQUIRE(cc.has<component_inherit_base>());
 				REQUIRE_NOTHROW(cc.at<component_inherit_base>());
-				REQUIRE_FALSE(cc.at_p<component_inherit_base>() == nullptr);
+				REQUIRE_FALSE(cc.find<component_inherit_base>() == nullptr);
 			}
 
 			THEN("the component can not be accessed by an unrelated component derived of the same base component") {
 				REQUIRE_FALSE(cc.has<component_inherit_derived_b>());
 				REQUIRE_THROWS_AS(cc.at<component_inherit_derived_b>(), slirc::exceptions::component_conflict);
-				REQUIRE(cc.at_p<component_inherit_derived_b>() == nullptr);
+				REQUIRE(cc.find<component_inherit_derived_b>() == nullptr);
 			}
 
 			THEN("the component can not be accessed by a more derived component type") {
 				REQUIRE_FALSE(cc.has<component_inherit_derived_a_derived>());
 				REQUIRE_THROWS_AS(cc.at<component_inherit_derived_a_derived>(), slirc::exceptions::component_conflict);
-				REQUIRE(cc.at_p<component_inherit_derived_a_derived>() == nullptr);
+				REQUIRE(cc.find<component_inherit_derived_a_derived>() == nullptr);
 			}
 
 			THEN("no other component based on the same based component can be inserted") {

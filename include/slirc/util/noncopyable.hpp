@@ -22,46 +22,25 @@
 
 #pragma once
 
-#ifndef SLIRC_MODULE_HPP_INCLUDED
-#define SLIRC_MODULE_HPP_INCLUDED
+#ifndef SLIRC_UTIL_NONCOPYABLE_HPP_INCLUDED
+#define SLIRC_UTIL_NONCOPYABLE_HPP_INCLUDED
 
-#include "detail/system.hpp"
-
-#include <cassert>
+#include "../detail/system.hpp"
 
 namespace slirc {
+namespace util {
 
-/** \brief Defines the base interface for modules.
+/** \brief Disallows copying of derived classes.
  */
-struct SLIRCAPI module_base {
-	/** \brief A reference to the IRC context this module is loaded into.
-	 */
-	::slirc::irc &irc;
-	virtual ~module_base()=default;
-
+struct noncopyable {
 protected:
-	/** \brief Constructs the module base.
-	 */
-	module_base(::slirc::irc &irc_)
-	: irc(irc_) {}
-};
-
-/** \brief Defines the base for specific modules.
- *
- * \note Only one module with the same \c module_base_api_type can be loaded
- *       into the same IRC context at any time.
- */
-template<typename ModuleApi>
-struct module: public module_base {
-	friend struct ::slirc::irc;
-
-	/// \brief The base
-	typedef ModuleApi module_base_api_type;
-
-protected:
-	using module_base::module_base;
+	noncopyable()=default;
+private:
+	noncopyable(const noncopyable &)=delete;
+	noncopyable &operator=(const noncopyable &)=delete;
 };
 
 }
+}
 
-#endif // SLIRC_MODULE_HPP_INCLUDED
+#endif // SLIRC_UTIL_NONCOPYABLE_HPP_INCLUDED

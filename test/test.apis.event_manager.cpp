@@ -24,19 +24,21 @@
 
 #include "../include/slirc/event.hpp"
 #include "../include/slirc/irc.hpp"
-#include "../include/slirc/apis/event_queue.hpp"
+#include "../include/slirc/apis/event_manager.hpp"
 
 enum class test_events: slirc::event::underlying_id_type {
-
+	test_event
 };
-SLIRC_REGISTER_EVENT_ID_ENUM(class test_events);
+SLIRC_REGISTER_EVENT_ID_ENUM(test_events);
 
-TEST_CASE("apis/event_queue - connections") {
-	GIVEN("an IRC context with an event queue loaded") {
+struct test_event_manager: slirc::apis::event_manager {};
+
+TEST_CASE("apis/event_manager - connections") {
+	GIVEN("an IRC context with an event manager loaded") {
 		slirc::irc irc;
-		irc.unload<slirc::apis::event_queue>();
-		irc.load<test_event_queue>();
-
-
+		irc.unload<slirc::apis::event_manager>();
+		irc.load<test_event_manager>();
 	}
 }
+
+// TODO: TEST CASES!

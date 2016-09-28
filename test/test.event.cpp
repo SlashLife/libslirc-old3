@@ -23,9 +23,11 @@
 #include "testcase.hpp"
 
 #include <functional>
+#include <iterator>
 #include <iomanip>
 #include <iostream>
 #include <type_traits>
+#include <vector>
 
 #include "../include/slirc/irc.hpp"
 #include "../include/slirc/event.hpp"
@@ -77,6 +79,14 @@ SLIRC_REGISTER_EVENT_ID_ENUM(type_test_4);
 
 
 
+enum valid_id_type_1: slirc::event::underlying_id_type { valid_id_1a, valid_id_1b };
+enum valid_id_type_2: slirc::event::underlying_id_type { valid_id_2 };
+
+SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_1);
+SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_2);
+
+
+
 SCENARIO("event - eligibility of types for event ids (event::is_valid_id_type, event::is_valid_id)", "") {
 	GIVEN("a potential event id type") {
 		WHEN("it is of the wrong underlying type and not registered as an event id type") {
@@ -106,12 +116,6 @@ SCENARIO("event - eligibility of types for event ids (event::is_valid_id_type, e
 }
 
 
-
-enum valid_id_type_1: slirc::event::underlying_id_type { valid_id_1a, valid_id_1b };
-enum valid_id_type_2: slirc::event::underlying_id_type { valid_id_2 };
-
-SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_1);
-SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_2);
 
 SCENARIO("event - event ids (event::id_type)", "") {
 	GIVEN("an event id") {
@@ -396,14 +400,54 @@ SCENARIO("event - event::handle(), event::handle_as()", "") {
 				REQUIRE( e->original_id == valid_id_1a );
 			}
 		}
+
+		e->pop_next_queued_id();
+	}
+}
+
+SCENARIO("event - event queue", "") {
+	using idlist = std::vector<slirc::event::id_type>;
+	auto get_queue = [](slirc::event::pointer ep) -> idlist {
+		idlist container;
+		ep->is_queued_as(
+			[&](slirc::event::id_type id) -> bool {
+				container.push_back(id);
+				return false; // always return false to traverse the whole queue
+			}
+		);
+		return container;
+	};
+
+	GIVEN("an event") {
+		slirc::irc irc;
+		auto e = irc.make_event(valid_id_1a);
+
+		WHEN("freshly created") {
+			THEN("it contains only the id it was created with") {
+				REQUIRE( get_queue(e) == idlist{ valid_id_1a } );
+			}
+		}
+
+		WHEN("queueing a different event") {
+			THEN("the other event cannot be found before being added") {
+				REQUIRE_FALSE( e->is_queued_as( valid_id_1b ) );
+			}
+
+			e->queue_as( valid_id_1b );
+
+			THEN("the other event can be found after being added") {
+				REQUIRE_FALSE( e->is_queued_as( valid_id_1b ) );
+			}
+
+			THEN("the new event is by default appended to the end") {
+				REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b}) );
+			}
+		}
 	}
 }
 
 // TODO: TEST CASES!
 /*
-SLIRCAPI void slirc::event::handle();
-SLIRCAPI void slirc::event::handle_as(id_type id);
-
 SLIRCAPI slirc::event::queuing_result slirc::event::queue_as(
 	id_type id, queuing_strategy strategy, queuing_position position
 );

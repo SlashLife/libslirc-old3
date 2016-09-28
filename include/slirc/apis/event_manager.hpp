@@ -262,6 +262,10 @@ public:
 	 *
 	 * \param e The event to append. Must not be a \c nullptr.
 	 *
+	 * \note If the queue is currently waited on, the event may be handled
+	 *       instantly, so once an event has been added, it should only be
+	 *       modified from event handlers handling the event. (i.e.: Completely
+	 *       finish initializing the event before adding it to the queue!)
 	 * \note This function is thread safe.
 	 */
 	virtual void queue(event::pointer e) = 0;

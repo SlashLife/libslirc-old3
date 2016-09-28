@@ -521,7 +521,7 @@
 
 1473012733 d:\github\libslirc\3rdparty\catch\include\internal\catch_default_main.hpp
 
-1474879675 d:\github\libslirc\include\slirc\component_container.hpp
+1474921708 d:\github\libslirc\include\slirc\component_container.hpp
 	"detail/system.hpp"
 	<cassert>
 	<memory>
@@ -530,9 +530,9 @@
 	<type_traits>
 	<unordered_map>
 	<utility>
-	<boost/utility.hpp>
 	"component.hpp"
 	"exceptions.hpp"
+	"util/noncopyable.hpp"
 
 1474879490 d:\github\libslirc\include\slirc\detail\system.hpp
 	<cassert>
@@ -559,16 +559,22 @@
 1474620953 source:d:\github\libslirc\test\test.testcase.cpp
 	"testcase.hpp"
 
-1474907667 source:d:\github\libslirc\test\test.event.cpp
+1475026500 source:d:\github\libslirc\test\test.event.cpp
 	"testcase.hpp"
 	<functional>
+	<iterator>
 	<iomanip>
 	<iostream>
 	<type_traits>
+	<vector>
+	"../include/slirc/irc.hpp"
 	"../include/slirc/event.hpp"
+	"../include/slirc/module.hpp"
+	"../src/irc.cpp"
 	"../src/event.cpp"
+	"../src/modules/event_manager.cpp"
 
-1474908157 d:\github\libslirc\include\slirc\event.hpp
+1474956622 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>
@@ -580,9 +586,9 @@
 	<vector>
 	<optional>
 	<experimental/optional>
-	<boost/utility.hpp>
 	"component_container.hpp"
 	"exceptions.hpp"
+	"util/noncopyable.hpp"
 
 1474910822 d:\github\libslirc\include\slirc\irc.hpp
 	"detail/system.hpp"
@@ -597,7 +603,7 @@
 	"module.hpp"
 	"apis/event_manager.hpp"
 
-1474896859 d:\github\libslirc\include\slirc\apis\event_manager.hpp
+1474957117 d:\github\libslirc\include\slirc\apis\event_manager.hpp
 	"../detail/system.hpp"
 	<chrono>
 	<functional>
@@ -607,7 +613,7 @@
 	"../module.hpp"
 	"../modules/event_manager.hpp"
 
-1474896457 d:\github\libslirc\include\slirc\modules\event_manager.hpp
+1474956834 d:\github\libslirc\include\slirc\modules\event_manager.hpp
 	"../detail/system.hpp"
 	"../apis/event_manager.hpp"
 
@@ -635,4 +641,7 @@
 	<unordered_map>
 	<boost/signals2.hpp>
 	"../../include/slirc/event.hpp"
+
+1474921051 d:\github\libslirc\include\slirc\util\noncopyable.hpp
+	"../detail/system.hpp"
 

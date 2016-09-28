@@ -118,7 +118,7 @@ constexpr std::false_type slirc_impldetail_enable_as_event_id_type(NotAnEventId)
  */
 class SLIRCAPI event: public takes_components, public std::enable_shared_from_this<event>, private util::noncopyable {
 public:
-	typedef std::shared_ptr<event> pointer; ///< A smart pointer to an event.
+	typedef std::shared_ptr<event> pointer; ///< A shared pointer to an event.
 	typedef std::weak_ptr<event> weak_pointer; ///< A weak pointer to an event.
 
 	/** The underlying type that enums must have to be eligible as event ids.
@@ -694,6 +694,9 @@ public:
 	 *
 	 * \return The next event id this event is queued as or an invalid event id
 	 *         if the queue is empty.
+	 *
+	 * \note This function is intended to be used by the event manager handling
+	 *       this event. Use by other entities may result in unexpected behavior.
 	 */
 	id_type pop_next_queued_id();
 

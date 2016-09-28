@@ -4,7 +4,7 @@
 	"../include/slirc/irc.hpp"
 	"../include/slirc/util/scoped_swap.hpp"
 
-1474921862 d:\github\libslirc\include\slirc\event.hpp
+1474956622 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>
@@ -60,7 +60,7 @@
 	"detail/system.hpp"
 	<cassert>
 
-1474896859 d:\github\libslirc\include\slirc\apis\event_manager.hpp
+1474957117 d:\github\libslirc\include\slirc\apis\event_manager.hpp
 	"../detail/system.hpp"
 	<chrono>
 	<functional>
@@ -86,7 +86,7 @@
 	"../include/slirc/irc.hpp"
 	"../include/slirc/modules/event_manager.hpp"
 
-1474896457 d:\github\libslirc\include\slirc\modules\event_manager.hpp
+1474956834 d:\github\libslirc\include\slirc\modules\event_manager.hpp
 	"../detail/system.hpp"
 	"../apis/event_manager.hpp"
 

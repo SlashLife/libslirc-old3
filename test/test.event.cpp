@@ -48,6 +48,32 @@ namespace slirc { namespace test {
 	};
 }}
 
+using idlist = std::vector<slirc::event::id_type>;
+inline idlist get_queue(slirc::event::pointer ep) {
+	idlist container;
+	ep->is_queued_as(
+		[&](slirc::event::id_type id) -> bool {
+			container.push_back(id);
+			return false; // always return false to traverse the whole queue
+		}
+	);
+	return container;
+}
+inline std::ostream &print_queue(std::ostream &os, slirc::event::pointer ep) {
+	bool begin=true;
+	os << '[';
+	ep->is_queued_as(
+		[&](slirc::event::id_type id) -> bool {
+			if (!begin) os << ", ";
+			begin = false;
+			id.print_debug(os);
+			return false; // always return false to traverse the whole queue
+		}
+	);
+	os << ']';
+	return os;
+}
+
 
 
 typedef signed char wrong_underlying_type;
@@ -81,9 +107,11 @@ SLIRC_REGISTER_EVENT_ID_ENUM(type_test_4);
 
 enum valid_id_type_1: slirc::event::underlying_id_type { valid_id_1a, valid_id_1b };
 enum valid_id_type_2: slirc::event::underlying_id_type { valid_id_2 };
+enum valid_id_type_3: slirc::event::underlying_id_type { valid_id_3 };
 
 SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_1);
 SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_2);
+SLIRC_REGISTER_EVENT_ID_ENUM(valid_id_type_3);
 
 
 
@@ -405,19 +433,7 @@ SCENARIO("event - event::handle(), event::handle_as()", "") {
 	}
 }
 
-SCENARIO("event - event queue", "") {
-	using idlist = std::vector<slirc::event::id_type>;
-	auto get_queue = [](slirc::event::pointer ep) -> idlist {
-		idlist container;
-		ep->is_queued_as(
-			[&](slirc::event::id_type id) -> bool {
-				container.push_back(id);
-				return false; // always return false to traverse the whole queue
-			}
-		);
-		return container;
-	};
-
+SCENARIO("event - event queue, basic queuing", "") {
 	GIVEN("an event") {
 		slirc::irc irc;
 		auto e = irc.make_event(valid_id_1a);
@@ -436,27 +452,181 @@ SCENARIO("event - event queue", "") {
 			e->queue_as( valid_id_1b );
 
 			THEN("the other event can be found after being added") {
-				REQUIRE_FALSE( e->is_queued_as( valid_id_1b ) );
+				REQUIRE( e->is_queued_as( valid_id_1b ) );
 			}
 
 			THEN("the new event is by default appended to the end") {
 				REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b}) );
 			}
 		}
+
+		WHEN("queueing a different event at the beginning") {
+			THEN("the other event cannot be found before being added") {
+				REQUIRE_FALSE( e->is_queued_as( valid_id_1b ) );
+			}
+
+			e->queue_as( valid_id_1b, slirc::event::at_front );
+
+			THEN("the other event can be found after being added") {
+				REQUIRE( e->is_queued_as( valid_id_1b ) );
+			}
+
+			THEN("the new event is queued at the beginning") {
+				REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_1a}) );
+			}
+		}
+	}
+
+	GIVEN("an event containing one event id once and another one twice") {
+		slirc::irc irc;
+		auto e = irc.make_event(valid_id_1a);
+
+		e->queue_as( valid_id_1b, slirc::event::duplicate, slirc::event::at_front );
+		e->queue_as( valid_id_1b, slirc::event::duplicate, slirc::event::at_back );
+
+		REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_1a, valid_id_1b}) );
+
+		WHEN("removing the single event id") {
+			REQUIRE( e->unqueue(valid_id_1a) );
+
+			THEN("the duplicated event ids will stay in the queue") {
+				REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_1b}) );
+			}
+		}
+
+		WHEN("removing the duplicate event id") {
+			REQUIRE( e->unqueue(valid_id_1b) );
+
+			THEN("the single event id will stay in the queue") {
+				REQUIRE( get_queue(e) == (idlist{valid_id_1a}) );
+			}
+		}
 	}
 }
 
-// TODO: TEST CASES!
-/*
-SLIRCAPI slirc::event::queuing_result slirc::event::queue_as(
-	id_type id, queuing_strategy strategy, queuing_position position
-);
+TEST_CASE("event - event queue, complex operations", "") {
+	slirc::irc irc;
+	auto e = irc.make_event(valid_id_1a);
+	e->queue_as(valid_id_1b, slirc::event::duplicate);
+	e->queue_as(valid_id_1a, slirc::event::duplicate);
+	e->queue_as(valid_id_2, slirc::event::duplicate);
+	REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
 
-SLIRCAPI bool slirc::event::unqueue(id_type id);
-SLIRCAPI bool slirc::event::unqueue(id_type::matcher matcher);
+	SECTION("queue_as (single param) - at_back, discard, existing element") {
+		REQUIRE( slirc::event::discarded == e->queue_as(valid_id_1a, slirc::event::discard, slirc::event::at_back) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
+	}
 
-SLIRCAPI bool slirc::event::is_queued_as(id_type id);
-SLIRCAPI bool slirc::event::is_queued_as(id_type::matcher matcher);
+	SECTION("queue_as (single param) - at_back, discard, non-existing element") {
+		REQUIRE( slirc::event::queued == e->queue_as(valid_id_3, slirc::event::discard, slirc::event::at_back) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2, valid_id_3}) );
+	}
 
-SLIRCAPI slirc::event::id_type slirc::event::pop_next_queued_id();
-*/
+	SECTION("queue_as (single param) - at_front, duplicate, existing element") {
+		REQUIRE( slirc::event::queued == e->queue_as(valid_id_1a, slirc::event::duplicate, slirc::event::at_front) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
+	}
+
+	SECTION("queue_as (single param) - at_front, duplicate, non-existing element") {
+		REQUIRE( slirc::event::queued == e->queue_as(valid_id_3, slirc::event::duplicate, slirc::event::at_front) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_3, valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
+	}
+
+	SECTION("queue_as (single param) - at_back, replace, existing element") {
+		REQUIRE( slirc::event::replaced == e->queue_as(valid_id_1a, slirc::event::replace, slirc::event::at_back) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_2, valid_id_1a}) );
+	}
+
+	SECTION("queue_as (single param) - at_back, replace, non-existing element") {
+		REQUIRE( slirc::event::queued == e->queue_as(valid_id_3, slirc::event::replace, slirc::event::at_back) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2, valid_id_3}) );
+	}
+
+
+
+	typedef std::vector<slirc::event::queuing_result> result_type;
+	std::vector<slirc::event::id_type> new_ids = {
+		valid_id_1a, slirc::event::id_type{}, valid_id_1a, valid_id_1b, valid_id_3 };
+	result_type results;
+	const auto result_logger = [&](auto, auto value){ results.push_back(value); };
+
+	SECTION("queue_as (multiple param) - at_back, discard, existing element") {
+		e->queue_as(new_ids.begin(), new_ids.end(), slirc::event::discard, slirc::event::at_back, result_logger);
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2, valid_id_3}) );
+		REQUIRE( results == (result_type{slirc::event::discarded,
+			slirc::event::invalid, slirc::event::discarded,
+			slirc::event::discarded, slirc::event::queued}) );
+	}
+
+	SECTION("queue_as (multiple param) - at_front, duplicate, existing element") {
+		e->queue_as(new_ids.begin(), new_ids.end(), slirc::event::duplicate, slirc::event::at_front, result_logger);
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1a, valid_id_1b,
+			valid_id_3, valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
+		REQUIRE( results == (result_type{slirc::event::queued,
+			slirc::event::invalid, slirc::event::queued,
+			slirc::event::queued, slirc::event::queued}) );
+	}
+
+	SECTION("queue_as (multiple param) - at_back, replace, existing element") {
+		e->queue_as(new_ids.begin(), new_ids.end(), slirc::event::replace, slirc::event::at_back, result_logger);
+		REQUIRE( get_queue(e) == (idlist{valid_id_2, valid_id_1a, valid_id_1a, valid_id_1b, valid_id_3}) );
+		REQUIRE( results == (result_type{slirc::event::replaced,
+			slirc::event::invalid, slirc::event::queued,
+			slirc::event::replaced, slirc::event::queued}) );
+	}
+
+
+
+	SECTION("unqueue (single id & matcher), is_queued_as (single id)") {
+		unsigned nth;
+		auto remove_first = [&nth](auto){ return 0==nth++; };
+
+		REQUIRE( e->is_queued_as(valid_id_1a) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1a, valid_id_1b, valid_id_1a, valid_id_2}) );
+		REQUIRE( e->unqueue(valid_id_1a) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_2}) );
+		REQUIRE_FALSE( e->unqueue(valid_id_1a) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_1b, valid_id_2}) );
+		REQUIRE_FALSE( e->is_queued_as(valid_id_1a) );
+
+		REQUIRE( e->is_queued_as(valid_id_1b) );
+		nth=0;
+		REQUIRE( e->unqueue(remove_first) );
+		REQUIRE( get_queue(e) == (idlist{valid_id_2}) );
+		REQUIRE_FALSE( e->is_queued_as(valid_id_1b) );
+
+		REQUIRE( e->is_queued_as(valid_id_2) );
+		nth=0;
+		REQUIRE( e->unqueue(remove_first) );
+		REQUIRE( get_queue(e) == (idlist{}) );
+		REQUIRE_FALSE( e->is_queued_as(valid_id_2) );
+
+		nth=0;
+		REQUIRE_FALSE( e->unqueue(remove_first) );
+		REQUIRE( get_queue(e) == (idlist{}) );
+	}
+
+
+
+	SECTION("is_queued_as (matcher)") {
+		auto all_false = [](auto){ return false; };
+		REQUIRE_FALSE( e->is_queued_as(all_false) );
+
+		const int nth=3;
+		REQUIRE( nth < get_queue(e).size() );
+		int num_checked=0;
+		auto accept_nth = [&](auto){ return nth == ++num_checked; };
+		REQUIRE( e->is_queued_as(accept_nth) );
+		REQUIRE( nth == num_checked );
+	}
+
+
+
+	SECTION("pop_next_queued_id") {
+		REQUIRE( valid_id_1a == e->pop_next_queued_id() );
+		REQUIRE( valid_id_1b == e->pop_next_queued_id() );
+		REQUIRE( valid_id_1a == e->pop_next_queued_id() );
+		REQUIRE( valid_id_2 == e->pop_next_queued_id() );
+		REQUIRE( !e->pop_next_queued_id() );
+	}
+}

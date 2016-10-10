@@ -14,7 +14,6 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DBUILD_DLL" />
 					<Add option="-DSLIRC_DEBUG" />
@@ -57,6 +56,9 @@
 		<Unit filename="include/slirc/irc.hpp" />
 		<Unit filename="include/slirc/module.hpp" />
 		<Unit filename="include/slirc/modules/event_manager.hpp" />
+		<Unit filename="include/slirc/string.hpp" />
+		<Unit filename="include/slirc/util/noncopyable.hpp" />
+		<Unit filename="include/slirc/util/scoped_swap.hpp" />
 		<Unit filename="src/event.cpp" />
 		<Unit filename="src/irc.cpp" />
 		<Unit filename="src/modules/event_manager.cpp" />

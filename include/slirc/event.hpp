@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <ostream>
 #include <memory>
 #include <typeindex>
 #include <typeinfo>
@@ -47,6 +48,7 @@
 #include "component_container.hpp"
 #include "exceptions.hpp"
 #include "util/noncopyable.hpp"
+#include "util/scoped_stream_flags.hpp"
 
 /** \def SLIRC_REGISTER_EVENT_ID_ENUM(idtype)
  *
@@ -365,6 +367,26 @@ public:
 			return static_cast<IdType>(id);
 		}
 
+		/** \brief Prints a string representation to an std::ostream for debugging.
+		 *
+		 * \param os The ostream to print to.
+		 *
+		 * \note The string representation uses std::type_info::name() and is
+		 *       implementation dependent accordingly. Do not use this for any
+		 *       purpose other than to get a human readable representation.
+		 */
+		void print_debug(std::ostream &os) const {
+			util::scoped_stream_flags<char> ssf(os);
+			os.copyfmt(std::basic_ios<char>(nullptr));
+
+			if (!*this) {
+				os << "<invalid>";
+			}
+			else {
+				os << "<event: " << index->name() << ", " << id << '>';
+			}
+		}
+
 	private:
 #if __has_include(<optional>)
 		std::optional
@@ -471,9 +493,11 @@ public:
 	 *     - \c at_front to queue this event next in the queue.
 	 *
 	 * \return
-	 *     - \c invalid if the given id is invalid,
-	 *     - \c discarded if the given id is queued already,
-	 *     - \c accepted if the id was queued successfully
+	 *     - \c discarded if discard was chosen as the strategy and
+	 *            a matching event id is queued already,
+	 *     - \c accepted if the id was queued successfully,
+	 *     - \c replaced if replace was chosen as the strategy and
+	 *            a matching event id is queued already
 	 *
 	 * \throw exceptions::invalid_event_id if the event id was invalid
 	 */
@@ -519,12 +543,12 @@ public:
 	 * \param result_callback A function that takes the iterator to an event id
 	 *     as well as the result from attempting to queue this id.
 	 */
-	template<typename Iterator>
+	template<typename Iterator, typename ResultCallback = std::function<void(Iterator, queuing_result)>>
 	inline void queue_as(
 		Iterator begin, Iterator end,
 		queuing_strategy strategy=discard,
 		queuing_position position=at_back,
-		std::function<void(Iterator, queuing_result)> result_callback
+		ResultCallback result_callback
 			= [](Iterator, queuing_result){}
 	) {
 		static_assert(std::is_base_of<
@@ -568,11 +592,11 @@ public:
 	 * \param result_callback A function that takes the iterator to an event id
 	 *     as well as the result from attempting to queue this id.
 	 */
-	template<typename Iterator>
+	template<typename Iterator, typename ResultCallback = std::function<void(Iterator, queuing_result)>>
 	inline void queue_as(
 		Iterator begin, Iterator end,
 		queuing_position position,
-		std::function<void(Iterator, queuing_result)> result_callback
+		ResultCallback result_callback
 			= [](Iterator, queuing_result){}
 	) {
 		queue_as(begin, end, discard, position, result_callback);
@@ -601,11 +625,11 @@ public:
 	 * \param result_callback A function that takes the iterator to an event id
 	 *     as well as the result from attempting to queue this id.
 	 */
-	template<typename Iterator>
+	template<typename Iterator, typename ResultCallback = std::function<void(Iterator, queuing_result)>>
 	inline void queue_as(
 		Iterator begin, Iterator end,
 		queuing_strategy strategy,
-		std::function<void(Iterator, queuing_result)> result_callback
+		ResultCallback result_callback
 	) {
 		queue_as(begin, end, strategy, at_back, result_callback);
 	}
@@ -623,10 +647,10 @@ public:
 	 * \param result_callback A function that takes the iterator to an event id
 	 *     as well as the result from attempting to queue this id.
 	 */
-	template<typename Iterator>
+	template<typename Iterator, typename ResultCallback = std::function<void(Iterator, queuing_result)>>
 	inline void queue_as(
 		Iterator begin, Iterator end,
-		std::function<void(Iterator, queuing_result)> result_callback
+		ResultCallback result_callback
 	) {
 		queue_as(begin, end, discard, at_back, result_callback);
 	}

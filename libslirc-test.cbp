@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="apis/event_manager">
-				<Option output="test/bin/test.component_container" prefix_auto="1" extension_auto="1" />
+				<Option output="test/bin/test.apis.event_manager" prefix_auto="1" extension_auto="1" />
 				<Option object_output="test/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -43,7 +43,7 @@
 				</Linker>
 			</Target>
 			<Target title="irc">
-				<Option output="test/bin/test.event" prefix_auto="1" extension_auto="1" />
+				<Option output="test/bin/test.irc" prefix_auto="1" extension_auto="1" />
 				<Option object_output="test/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -84,6 +84,8 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-Og" />
+			<Add option="-g" />
 			<Add option="-fexceptions" />
 			<Add option="-DSLIRC_DEBUG" />
 		</Compiler>

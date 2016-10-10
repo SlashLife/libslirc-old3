@@ -4,7 +4,7 @@
 	"../include/slirc/irc.hpp"
 	"../include/slirc/util/scoped_swap.hpp"
 
-1474956622 d:\github\libslirc\include\slirc\event.hpp
+1475032936 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>

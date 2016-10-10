@@ -52,7 +52,7 @@ slirc::event::queuing_result slirc::event::queue_as(
 ) {
 	id_queue_type add_ids;
 	queuing_result result = prepare_append_queue(add_ids, id, strategy);
-	if (result == queued) {
+	if (!add_ids.empty()) {
 		append_to_queue_unchecked(add_ids, position);
 	}
 	return result;
@@ -84,14 +84,14 @@ bool slirc::event::unqueue(id_type::matcher matcher) {
 
 bool slirc::event::is_queued_as(id_type id) const {
 	return queued_ids.end() != std::find(
-		queued_ids.begin(), queued_ids.end(),
+		queued_ids.begin() + next_id_index, queued_ids.end(),
 		id
 	);
 }
 
 bool slirc::event::is_queued_as(id_type::matcher matcher) const {
 	return queued_ids.end() != std::find_if(
-		queued_ids.begin(), queued_ids.end(),
+		queued_ids.begin() + next_id_index, queued_ids.end(),
 		matcher
 	);
 }
@@ -179,11 +179,12 @@ void slirc::event::append_to_queue_unchecked(
 			else {
 				// not enough space in existing queue;
 				// append current queue to new queue and swap
+				const auto prev_size = add_ids.size();
 				add_ids.resize( add_ids.size() + queued_ids.size() - next_id_index );
 
 				auto end_of_insert = std::copy(
-					queued_ids.begin() + next_id_index - add_ids.size(), queued_ids.end(),
-					add_ids.begin()
+					queued_ids.begin() + next_id_index, queued_ids.end(),
+					add_ids.begin() + prev_size
 				);
 				((void)end_of_insert); // only used in assertion
 				SLIRC_ASSERT( end_of_insert == add_ids.end()
@@ -227,7 +228,7 @@ void slirc::event::append_to_queue_unchecked(
 			((void)prev_size); // only used in assertion
 
 			queued_ids.insert(queued_ids.end(), add_ids.begin(), add_ids.end());
-			SLIRC_ASSERT( queued_ids.size() == prev_size
+			SLIRC_ASSERT( queued_ids.size() == prev_size + add_ids.size()
 				&& "Appending to the queue wrongfully lost or created elements." );
 		}
 	}

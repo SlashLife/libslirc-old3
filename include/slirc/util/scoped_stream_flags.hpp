@@ -22,55 +22,57 @@
 
 #pragma once
 
-#ifndef SLIRC_TEST_TESTCASE_HPP_INCLUDED
-#define SLIRC_TEST_TESTCASE_HPP_INCLUDED
+#ifndef SLIRC_UTIL_SCOPED_STREAM_FLAGS_HPP_INCLUDED
+#define SLIRC_UTIL_SCOPED_STREAM_FLAGS_HPP_INCLUDED
 
-#include <sstream>
-#include <stdexcept>
+#include "../detail/system.hpp"
+
+#include <ios>
 #include <string>
 
-#define SLIRC_TESTCASE
-#define SLIRC_EXPORTS
+namespace slirc {
+namespace util {
 
-namespace slirc { namespace test {
-	struct assertion_failed_exception: std::exception {
-		const char *file;
-		unsigned line;
-		const char *cond;
+/** \brief Temporarily changes the format flags of a stream.
+ *
+ * On initializing an instance of this type, it will back up the current format
+ * flags of a stream.
+ *
+ * On destruction the old flags will be restored.
+ */
+template<class CharT, class Traits = std::char_traits<CharT>
+>struct scoped_stream_flags {
+	/// The type of stream for which the format is backed up.
+	typedef ::std::basic_ios<CharT, Traits> ios_type;
 
-		assertion_failed_exception(const char *file, unsigned line, const char *cond)
-		: file(file)
-		, line(line)
-		, cond(cond) {}
-		assertion_failed_exception(const assertion_failed_exception &)=default;
-		assertion_failed_exception &operator=(const assertion_failed_exception &)=default;
-
-		const char *what() const noexcept {
-			static std::string msg;
-			std::stringstream ss;
-			ss
-				<< "assertion failed: "
-				<< file << '(' << line << "): "
-				<< cond;
-			msg = ss.str();
-			return msg.c_str();
-		}
-	};
-	inline void assert_(bool cond, const char *file, unsigned line, const char *text) {
-		if (!(cond))
-			throw ::slirc::test::assertion_failed_exception(file, line, text);
+	/** \brief Backs up the format flags for a stream.
+	 *
+	 * \param stream The stream for which to back up and later restore the flags.
+	 */
+	scoped_stream_flags(ios_type &stream)
+	: scoped_stream(stream)
+	, original_flags(nullptr) {
+		original_flags.copyfmt(scoped_stream);
 	}
-}}
 
-// override internal assert to make them testable -
-// test code should not invoke assertions unintentionally anyway.
-#undef SLIRC_ASSERT
-#define SLIRC_ASSERT(cond) ::slirc::test::assert_(cond, __FILE__, __LINE__, #cond)
+	/** \brief Restores the original format flags to the stream.
+	 */
+	~scoped_stream_flags() {
+		restore();
+	}
 
-#define CATCH_CONFIG_MAIN
-#include "../3rdparty/catch/include/catch.hpp"
+	/** \brief Restores the original format flags to the stream.
+	 */
+	void restore() {
+		scoped_stream.copyfmt(original_flags);
+	}
+private:
+	ios_type &scoped_stream;
+	ios_type original_flags;
+};
 
-#define REQUIRE_ASSERTION_FAILURE(cond) \
-	REQUIRE_THROWS_AS(cond, ::slirc::test::assertion_failed_exception)
+}
+}
 
-#endif // SLIRC_TEST_TESTCASE_HPP_INCLUDED
+#endif // SLIRC_UTIL_SCOPED_STREAM_FLAGS_HPP_INCLUDED
+

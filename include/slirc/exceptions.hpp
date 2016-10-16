@@ -32,6 +32,15 @@
 namespace slirc {
 namespace exceptions {
 
+/** \brief Is thrown when attempting to connect() an establishing or already
+ *         established connection.
+ *
+ * \see slirc::apis::connection
+ */
+struct already_connected: std::logic_error {
+	already_connected(): std::logic_error("The connection already is being established or has been established.") {}
+};
+
 /** \brief Signals the presence of a conflicting component on an operation on
  *    slirc::component_container.
  *

@@ -45,7 +45,13 @@
 			<Add option="-std=c++1z" />
 			<Add option="-pthread" />
 			<Add option="-DSLIRC_EXPORTS" />
+			<Add option="-DSLIRC_BUILD_NO_SSL" />
 		</Compiler>
+		<Linker>
+			<Add library="boost_system" />
+			<Add library="ws2_32" />
+		</Linker>
+		<Unit filename="include/slirc/apis/connection.hpp" />
 		<Unit filename="include/slirc/apis/event_manager.hpp" />
 		<Unit filename="include/slirc/component.hpp" />
 		<Unit filename="include/slirc/component_container.hpp" />
@@ -55,13 +61,18 @@
 		<Unit filename="include/slirc/exceptions.hpp" />
 		<Unit filename="include/slirc/irc.hpp" />
 		<Unit filename="include/slirc/module.hpp" />
+		<Unit filename="include/slirc/modules/connection.hpp" />
 		<Unit filename="include/slirc/modules/event_manager.hpp" />
+		<Unit filename="include/slirc/network.hpp" />
 		<Unit filename="include/slirc/string.hpp" />
 		<Unit filename="include/slirc/util/noncopyable.hpp" />
+		<Unit filename="include/slirc/util/scoped_stream_flags.hpp" />
 		<Unit filename="include/slirc/util/scoped_swap.hpp" />
 		<Unit filename="src/event.cpp" />
 		<Unit filename="src/irc.cpp" />
+		<Unit filename="src/modules/connection.cpp" />
 		<Unit filename="src/modules/event_manager.cpp" />
+		<Unit filename="src/network.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -1,14 +1,15 @@
 # depslib dependency file v1.0
-1474891898 source:d:\github\libslirc\src\event.cpp
+1476654755 source:d:\github\libslirc\src\event.cpp
 	"../include/slirc/event.hpp"
 	"../include/slirc/irc.hpp"
 	"../include/slirc/util/scoped_swap.hpp"
 
-1475032936 d:\github\libslirc\include\slirc\event.hpp
+1476130985 d:\github\libslirc\include\slirc\event.hpp
 	"detail/system.hpp"
 	<algorithm>
 	<functional>
 	<iterator>
+	<ostream>
 	<memory>
 	<typeindex>
 	<typeinfo>
@@ -19,6 +20,7 @@
 	"component_container.hpp"
 	"exceptions.hpp"
 	"util/noncopyable.hpp"
+	"util/scoped_stream_flags.hpp"
 
 1474879490 d:\github\libslirc\include\slirc\detail\system.hpp
 	<cassert>
@@ -39,11 +41,11 @@
 1473189170 d:\github\libslirc\include\slirc\component.hpp
 	"detail/system.hpp"
 
-1474802517 d:\github\libslirc\include\slirc\exceptions.hpp
+1476609889 d:\github\libslirc\include\slirc\exceptions.hpp
 	"detail/system.hpp"
 	<stdexcept>
 
-1474910822 d:\github\libslirc\include\slirc\irc.hpp
+1476648361 d:\github\libslirc\include\slirc\irc.hpp
 	"detail/system.hpp"
 	<map>
 	<memory>
@@ -56,11 +58,11 @@
 	"module.hpp"
 	"apis/event_manager.hpp"
 
-1474903344 d:\github\libslirc\include\slirc\module.hpp
+1476571666 d:\github\libslirc\include\slirc\module.hpp
 	"detail/system.hpp"
 	<cassert>
 
-1474957117 d:\github\libslirc\include\slirc\apis\event_manager.hpp
+1476654812 d:\github\libslirc\include\slirc\apis\event_manager.hpp
 	"../detail/system.hpp"
 	<chrono>
 	<functional>
@@ -96,4 +98,52 @@
 
 1474921051 d:\github\libslirc\include\slirc\util\noncopyable.hpp
 	"../detail/system.hpp"
+
+1476097361 d:\github\libslirc\include\slirc\util\scoped_stream_flags.hpp
+	"../detail/system.hpp"
+	<ios>
+	<string>
+
+1476653009 source:d:\github\libslirc\src\network.cpp
+	"../include/slirc/network.hpp"
+	<mutex>
+	<stdexcept>
+	<thread>
+	<optional>
+	<experimental/optional>
+	<boost/asio/io_service.hpp>
+
+1476653775 d:\github\libslirc\include\slirc\network.hpp
+	"detail/system.hpp"
+
+1476658885 source:d:\github\libslirc\src\modules\connection.cpp
+	"../../include/slirc/modules/connection.hpp"
+	<cstdlib>
+	<algorithm>
+	<array>
+	<mutex>
+	<vector>
+	<iostream>
+	<optional>
+	<experimental/optional>
+	<boost/asio/buffer.hpp>
+	<boost/asio/ip/tcp.hpp>
+	<boost/asio/ssl/context.hpp>
+	<boost/asio/ssl/stream.hpp>
+	"../../include/slirc/exceptions.hpp"
+	"../../include/slirc/irc.hpp"
+	"../../include/slirc/network.hpp"
+
+1476653381 d:\github\libslirc\include\slirc\modules\connection.hpp
+	"../detail/system.hpp"
+	<memory>
+	<string>
+	"../component.hpp"
+	"../apis/connection.hpp"
+
+1476658215 d:\github\libslirc\include\slirc\apis\connection.hpp
+	"../detail/system.hpp"
+	"../event.hpp"
+	"../module.hpp"
+	"../modules/connection.hpp"
 

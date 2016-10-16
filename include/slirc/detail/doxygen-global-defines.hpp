@@ -44,6 +44,13 @@
  * \brief marks the exported API
  */
 
+#undef SLIRC_BUILD_NO_SSL
+#define SLIRC_BUILD_NO_SSL
+/** \def SLIRC_BUILD_NO_SSL
+ *
+ * \brief Build libslirc without SSL.
+ */
+
 #undef SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
 #define SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
 /** \def SLIRC_NO_INCLUDE_API_DEFAULT_IMPLEMENTATION
@@ -53,4 +60,3 @@
  * When defined, including any member of slirc::apis will not automatically
  * include its default implementation.
  */
-

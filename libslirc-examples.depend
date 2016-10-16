@@ -1,0 +1,99 @@
+# depslib dependency file v1.0
+1476658531 source:d:\github\libslirc\example\example.minibot.cpp
+	<iostream>
+	<slirc/irc.hpp>
+	<slirc/modules/connection.hpp>
+
+1476648361 d:\github\libslirc\include\slirc\irc.hpp
+	"detail/system.hpp"
+	<map>
+	<memory>
+	<typeindex>
+	<typeinfo>
+	<type_traits>
+	<boost/utility.hpp>
+	"component_container.hpp"
+	"event.hpp"
+	"module.hpp"
+	"apis/event_manager.hpp"
+
+1474879490 d:\github\libslirc\include\slirc\detail\system.hpp
+	<cassert>
+
+1474921708 d:\github\libslirc\include\slirc\component_container.hpp
+	"detail/system.hpp"
+	<cassert>
+	<memory>
+	<typeinfo>
+	<typeindex>
+	<type_traits>
+	<unordered_map>
+	<utility>
+	"component.hpp"
+	"exceptions.hpp"
+	"util/noncopyable.hpp"
+
+1473189170 d:\github\libslirc\include\slirc\component.hpp
+	"detail/system.hpp"
+
+1476609889 d:\github\libslirc\include\slirc\exceptions.hpp
+	"detail/system.hpp"
+	<stdexcept>
+
+1474921051 d:\github\libslirc\include\slirc\util\noncopyable.hpp
+	"../detail/system.hpp"
+
+1476130985 d:\github\libslirc\include\slirc\event.hpp
+	"detail/system.hpp"
+	<algorithm>
+	<functional>
+	<iterator>
+	<ostream>
+	<memory>
+	<typeindex>
+	<typeinfo>
+	<type_traits>
+	<vector>
+	<optional>
+	<experimental/optional>
+	"component_container.hpp"
+	"exceptions.hpp"
+	"util/noncopyable.hpp"
+	"util/scoped_stream_flags.hpp"
+
+1476097361 d:\github\libslirc\include\slirc\util\scoped_stream_flags.hpp
+	"../detail/system.hpp"
+	<ios>
+	<string>
+
+1476571666 d:\github\libslirc\include\slirc\module.hpp
+	"detail/system.hpp"
+	<cassert>
+
+1476654812 d:\github\libslirc\include\slirc\apis\event_manager.hpp
+	"../detail/system.hpp"
+	<chrono>
+	<functional>
+	<vector>
+	"../component.hpp"
+	"../event.hpp"
+	"../module.hpp"
+	"../modules/event_manager.hpp"
+
+1474956834 d:\github\libslirc\include\slirc\modules\event_manager.hpp
+	"../detail/system.hpp"
+	"../apis/event_manager.hpp"
+
+1476653381 d:\github\libslirc\include\slirc\modules\connection.hpp
+	"../detail/system.hpp"
+	<memory>
+	<string>
+	"../component.hpp"
+	"../apis/connection.hpp"
+
+1476658215 d:\github\libslirc\include\slirc\apis\connection.hpp
+	"../detail/system.hpp"
+	"../event.hpp"
+	"../module.hpp"
+	"../modules/connection.hpp"
+

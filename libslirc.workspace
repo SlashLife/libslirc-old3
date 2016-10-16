@@ -3,5 +3,6 @@
 	<Workspace title="Workspace">
 		<Project filename="libslirc.cbp" />
 		<Project filename="libslirc-test.cbp" />
+		<Project filename="libslirc-examples.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

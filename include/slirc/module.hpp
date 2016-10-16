@@ -31,6 +31,8 @@
 
 namespace slirc {
 
+class irc;
+
 /** \brief Defines the base interface for modules.
  */
 struct SLIRCAPI module_base {

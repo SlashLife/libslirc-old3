@@ -36,6 +36,9 @@
 #include "../module.hpp"
 
 namespace slirc {
+
+class irc;
+
 namespace apis {
 
 /** \brief Defines the interface for the main event manager.
@@ -46,6 +49,8 @@ protected:
 	/// \brief Signature for disconnectors.
 	typedef std::function<void(event_manager*)> disconnector_type;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 	/** \brief Holds additional follow up events to this event.
 	 *
 	 * Added to events on call of event::afterwards()
@@ -54,6 +59,7 @@ protected:
 		/// \brief Contains the events.
 		std::vector<event::pointer> events;
 	};
+#pragma GCC diagnostic pop
 
 public:
 	/** \brief Represents the connection of an event handler.

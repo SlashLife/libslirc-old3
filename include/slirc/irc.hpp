@@ -290,7 +290,7 @@ public:
 		return *event_manager_;
 	}
 
-	/** \brief Gets the event queue for this IRC context.
+	/** \brief Gets the event manager for this IRC context.
 	 *
 	 * Equivalent to <tt>get<apis::event_manager>()</tt>
 	 *

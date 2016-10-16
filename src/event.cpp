@@ -96,6 +96,16 @@ bool slirc::event::is_queued_as(id_type::matcher matcher) const {
 	);
 }
 
+void slirc::event::queue() {
+	irc.event_manager().queue(shared_from_this());
+}
+
+void slirc::event::afterwards(pointer e) {
+	auto &aft =
+		components.at_or_insert(apis::event_manager::handle_afterwards());
+	aft.events.push_back(e);
+}
+
 slirc::event::id_type slirc::event::pop_next_queued_id() {
 	if (next_id_index < queued_ids.size()) {
 		return queued_ids[next_id_index++];

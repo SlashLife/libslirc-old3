@@ -114,7 +114,9 @@ slirc::event::id_type slirc::event::pop_next_queued_id() {
 }
 
 slirc::event::queuing_result slirc::event::prepare_append_queue(
-	id_queue_type &add_ids, id_type newid, queuing_strategy strategy
+	id_queue_type &add_ids,
+	id_type newid,
+	queuing_strategy strategy
 ) {
 	if (!newid) {
 		return invalid;
@@ -167,7 +169,8 @@ slirc::event::queuing_result slirc::event::prepare_append_queue(
 }
 
 void slirc::event::append_to_queue_unchecked(
-	id_queue_type &add_ids, queuing_position position
+	id_queue_type &add_ids,
+	queuing_position position
 ) {
 	// we assume all checks have been done beforehand
 	// (semantically, we're operating in a "duplicate" strategy mode)
